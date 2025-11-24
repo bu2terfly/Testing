@@ -38,19 +38,18 @@
   .ai-button::before {
     content: "";
     position: absolute;
-    inset: -4px; /* Negative inset = border thickness */
+    inset: -6px; /* Border thickness */
     border-radius: 999px;
     background: conic-gradient(
       #a78bfa, #86efac, #7dd3fc, #c084fc, #67e8f9, #d8b4fe, #a78bfa
     );
     background-size: 200% 200%;
     animation: flow 10s linear infinite;
-    filter: blur(8px) drop-shadow(0 0 30px rgba(139,92,246,0.5));
     z-index: -1;
   }
 
   .ai-button:hover::before {
-    filter: blur(8px) drop-shadow(0 0 50px rgba(139,92,246,0.7));
+    inset: -8px;
   }
 
   /* The pill image */
@@ -79,7 +78,7 @@
 
 <a href="https://your-ai-page.com" target="_blank">
   <div class="ai-button">
-    <img src="23441-removebg-preview.png" alt="Attenza AI">
+    <img src="23441.png" alt="Attenza AI">
   </div>
 </a>
 
