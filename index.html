@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pill Button</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #0f0f1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .ai-button {
+    position: relative;
+    display: inline-block;
+    padding: 16px;                    /* glow thickness */
+    border-radius: 999px;             /* perfect pill */
+    background: conic-gradient(
+      from 0deg,
+      #a78bfa, #86efac, #93c5fd, 
+      #c084fc, #67e8f9, #d8b4fe, #a78bfa
+    );
+    background-size: 300% 300%;
+    animation: flow 9s ease infinite;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .ai-button:hover {
+    transform: scale(1.09);
+    box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
+  }
+
+  .ai-button img {
+    display: block;
+    width: 240px;                     /* change this if your image is bigger/smaller */
+    height: auto;
+    border-radius: 999px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* This creates the "hole" so only the glowing border is visible */
+  .ai-button::before {
+    content: "";
+    position: absolute;
+    inset: 7px;                       /* smaller value = thicker glow */
+    background: #0f0f1a;              /* matches page background */
+    border-radius: 999px;
+    z-index: 1;
+  }
+
+  @keyframes flow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Gentle floating animation */
+  .ai-button {
+    animation: flow 9s ease infinite, float 7s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-14px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Clickable button that goes to your AI page -->
+<a href="https://your-ai-page.com" target="_blank">
+  <div class="ai-button">
+    <!-- Local image - just drop your file in the same folder -->
+    <img src="button.png" alt="AI Button">
+  </div>
+</a>
+
+</body>
+</html>
