@@ -3,56 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Pill Button</title>
+<title>Attenza AI – Perfect Pill Button</title>
 <style>
   body {
     margin: 0;
     height: 100vh;
-    background: #0f0f1a;
+    background: #0a0a15;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
 
-  .ai-button {
-    position: relative;
-    display: inline-block;
-    padding: 16px;                    /* glow thickness */
-    border-radius: 999px;             /* perfect pill */
-    background: conic-gradient(
-      from 0deg,
-      #a78bfa, #86efac, #93c5fd, 
-      #c084fc, #67e8f9, #d8b4fe, #a78bfa
-    );
-    background-size: 300% 300%;
-    animation: flow 9s ease infinite;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Main clickable link */
+  a {
+    display: block;
     cursor: pointer;
   }
 
-  .ai-button:hover {
-    transform: scale(1.09);
-    box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
+  /* Container that holds the animated gradient border */
+  .ai-button {
+    position: relative;
+    display: inline-block;
+    padding: 18px; /* ← This controls glow thickness (increase = thicker glow) */
+    border-radius: 999px;
+    background: conic-gradient(
+      #a78bfa, #86efac, #7dd3fc, #c084fc, #67e8f9, #d8b4fe, #a78bfa
+    );
+    background-size: 200% 200%;
+    animation: flow 10s linear infinite;
+    filter: drop-shadow(0 0 30px rgba(139,92,246,0.5));
   }
 
+  .ai-button:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 50px rgba(139,92,246,0.7));
+  }
+
+  /* The actual pill image */
   .ai-button img {
     display: block;
-    width: 240px;                     /* change this if your image is bigger/smaller */
+    width: 260px;           /* change to your image size */
     height: auto;
     border-radius: 999px;
     position: relative;
     z-index: 2;
   }
 
-  /* This creates the "hole" so only the glowing border is visible */
+  /* This is the magic: masks the gradient to your image shape exactly */
   .ai-button::before {
     content: "";
     position: absolute;
-    inset: 7px;                       /* smaller value = thicker glow */
-    background: #0f0f1a;              /* matches page background */
+    inset: 0;
+    background: inherit;                 /* copies the animated gradient */
+    background-size: inherit;
+    animation: inherit;
     border-radius: 999px;
-    z-index: 1;
+    mask-image: url("button.png");        /* ← your exact pill PNG */
+    mask-mode: alpha;
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    mask-position: center;
+    padding: 18px;                        /* must match .ai-button padding */
+    box-sizing: border-box;
   }
 
   @keyframes flow {
@@ -61,24 +74,22 @@
     100% { background-position: 0% 50%; }
   }
 
-  /* Gentle floating animation */
+  /* Optional floating */
   .ai-button {
-    animation: flow 9s ease infinite, float 7s ease-in-out infinite;
+    animation: flow 10s linear infinite, float 6s ease-in-out infinite;
   }
-
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-14px); }
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-12px); }
   }
 </style>
 </head>
 <body>
 
-<!-- Clickable button that goes to your AI page -->
 <a href="https://your-ai-page.com" target="_blank">
   <div class="ai-button">
-    <!-- Local image - just drop your file in the same folder -->
-    <img src="23441-removebg-preview.png" alt="AI Button">
+    <!-- Your local pill image (transparent PNG works best) -->
+    <img src="23441-removebg-preview.png" alt="Attenza AI">
   </div>
 </a>
 
