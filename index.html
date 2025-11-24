@@ -15,57 +15,52 @@
     overflow: hidden;
   }
 
-  /* Main clickable link */
   a {
     display: block;
     cursor: pointer;
+    text-decoration: none;
   }
 
-  /* Container that holds the animated gradient border */
+  /* Main container - no padding! */
   .ai-button {
     position: relative;
     display: inline-block;
-    padding: 18px; /* ← This controls glow thickness (increase = thicker glow) */
+    border-radius: 999px;
+    animation: float 6s ease-in-out infinite;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-button:hover {
+    transform: scale(1.08);
+  }
+
+  /* Animated gradient border using ::before */
+  .ai-button::before {
+    content: "";
+    position: absolute;
+    inset: -4px; /* Negative inset = border thickness */
     border-radius: 999px;
     background: conic-gradient(
       #a78bfa, #86efac, #7dd3fc, #c084fc, #67e8f9, #d8b4fe, #a78bfa
     );
     background-size: 200% 200%;
     animation: flow 10s linear infinite;
-    filter: drop-shadow(0 0 30px rgba(139,92,246,0.5));
+    filter: blur(8px) drop-shadow(0 0 30px rgba(139,92,246,0.5));
+    z-index: -1;
   }
 
-  .ai-button:hover {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 50px rgba(139,92,246,0.7));
+  .ai-button:hover::before {
+    filter: blur(8px) drop-shadow(0 0 50px rgba(139,92,246,0.7));
   }
 
-  /* The actual pill image */
+  /* The pill image */
   .ai-button img {
     display: block;
-    width: 260px;           /* change to your image size */
+    width: 260px;
     height: auto;
     border-radius: 999px;
     position: relative;
     z-index: 2;
-  }
-
-  /* This is the magic: masks the gradient to your image shape exactly */
-  .ai-button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: inherit;                 /* copies the animated gradient */
-    background-size: inherit;
-    animation: inherit;
-    border-radius: 999px;
-    mask-image: url("button.png");        /* ← your exact pill PNG */
-    mask-mode: alpha;
-    mask-repeat: no-repeat;
-    mask-size: 100% 100%;
-    mask-position: center;
-    padding: 18px;                        /* must match .ai-button padding */
-    box-sizing: border-box;
   }
 
   @keyframes flow {
@@ -74,10 +69,6 @@
     100% { background-position: 0% 50%; }
   }
 
-  /* Optional floating */
-  .ai-button {
-    animation: flow 10s linear infinite, float 6s ease-in-out infinite;
-  }
   @keyframes float {
     0%,100% { transform: translateY(0); }
     50%     { transform: translateY(-12px); }
@@ -88,7 +79,6 @@
 
 <a href="https://your-ai-page.com" target="_blank">
   <div class="ai-button">
-    <!-- Your local pill image (transparent PNG works best) -->
     <img src="23441-removebg-preview.png" alt="Attenza AI">
   </div>
 </a>
