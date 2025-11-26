@@ -1,86 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attenza AI – Perfect Pill Button</title>
-<style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Responsive Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- LOADER CSS START --- */
+        .loader {
+            --color-one: #ffbf48;
+            --color-two: #be4a1d;
+            --color-three: #ffbf4780;
+            --color-four: #bf4a1d80;
+            --color-five: #ffbf4740;
+            --time-animation: 2s;
+            --size: 0.5; /* Adjusted size to fit inside the button */
+            position: relative;
+            border-radius: 50%;
+            transform: scale(var(--size));
+            box-shadow: 0 0 25px 0 var(--color-three), 0 20px 50px 0 var(--color-four);
+            animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+            /* Flex properties for centering in its parent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  a {
-    display: block;
-    cursor: pointer;
-    text-decoration: none;
-  }
+        .loader::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border-top: solid 1px var(--color-one);
+            border-bottom: solid 1px var(--color-two);
+            background: linear-gradient(180deg, var(--color-five), var(--color-four));
+            box-shadow: inset 0 10px 10px 0 var(--color-three), inset 0 -10px 10px 0 var(--color-four);
+        }
 
-  /* Main container - no padding! */
-  .ai-button {
-    position: relative;
-    display: inline-block;
-    border-radius: 999px;
-    animation: float 6s ease-in-out infinite;
-    transition: transform 0.3s ease;
-  }
+        .loader .box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(
+                180deg,
+                var(--color-one) 30%,
+                var(--color-two) 70%
+            );
+            mask: url(#clipping);
+            -webkit-mask: url(#clipping);
+        }
 
-  .ai-button:hover {
-    transform: scale(1.08);
-  }
+        .loader svg {
+            position: absolute;
+        }
 
-  /* Animated gradient border using ::before */
-  .ai-button::before {
-    content: "";
-    position: absolute;
-    inset: -3px; /* Border thickness */
-    border-radius: 999px;
-    background: conic-gradient(
-      #a78bfa, #86efac, #7dd3fc, #c084fc, #67e8f9, #d8b4fe, #a78bfa
-    );
-    background-size: 200% 200%;
-    animation: flow 10s linear infinite;
-    z-index: -1;
-  }
+        .loader svg #clipping {
+            filter: contrast(15);
+            animation: roundness calc(var(--time-animation) / 2) linear infinite;
+        }
 
-  .ai-button:hover::before {
-    inset: -5px;
-  }
+        .loader svg #clipping polygon {
+            filter: blur(7px);
+        }
 
-  /* The pill image */
-  .ai-button img {
-    display: block;
-    width: 260px;
-    height: auto;
-    border-radius: 999px;
-    position: relative;
-    z-index: 2;
-  }
+        .loader svg #clipping polygon:nth-child(1) {
+            transform-origin: 75% 25%;
+            transform: rotate(90deg);
+        }
 
-  @keyframes flow {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+        .loader svg #clipping polygon:nth-child(2) {
+            transform-origin: 50% 50%;
+            animation: rotation var(--time-animation) linear infinite reverse;
+        }
 
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%     { transform: translateY(-12px); }
-  }
-</style>
+        .loader svg #clipping polygon:nth-child(3) {
+            transform-origin: 50% 60%;
+            animation: rotation var(--time-animation) linear infinite;
+            animation-delay: calc(var(--time-animation) / -3);
+        }
+
+        .loader svg #clipping polygon:nth-child(4) {
+            transform-origin: 40% 40%;
+            animation: rotation var(--time-animation) linear infinite reverse;
+        }
+
+        .loader svg #clipping polygon:nth-child(5) {
+            transform-origin: 40% 40%;
+            animation: rotation var(--time-animation) linear infinite reverse;
+            animation-delay: calc(var(--time-animation) / -2);
+        }
+
+        .loader svg #clipping polygon:nth-child(6) {
+            transform-origin: 60% 40%;
+            animation: rotation var(--time-animation) linear infinite;
+        }
+
+        .loader svg #clipping polygon:nth-child(7) {
+            transform-origin: 60% 40%;
+            animation: rotation var(--time-animation) linear infinite;
+            animation-delay: calc(var(--time-animation) / -1.5);
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes roundness {
+            0% {
+                filter: contrast(15);
+            }
+            20% {
+                filter: contrast(3);
+            }
+            40% {
+                filter: contrast(3);
+            }
+            60% {
+                filter: contrast(15);
+            }
+            100% {
+                filter: contrast(15);
+            }
+        }
+
+        @keyframes colorize {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            20% {
+                filter: hue-rotate(-30deg);
+            }
+            40% {
+                filter: hue-rotate(-60deg);
+            }
+            60% {
+                filter: hue-rotate(-90deg);
+            }
+            80% {
+                filter: hue-rotate(-45deg);
+            }
+            100% {
+                filter: hue-rotate(0deg);
+            }
+        }
+        /* --- LOADER CSS END --- */
+
+        /* --- TYPEWRITER CSS START --- */
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden; /* Ensures the content is not visible until the animation */
+            white-space: nowrap; /* Keeps the content on a single line */
+            border-right: 0.15em solid #a21caf; /* The typewriter cursor */
+            animation:
+                typing 3.5s steps(40, end) infinite alternate,
+                blink-caret 0.75s step-end infinite;
+            width: 0; /* Starts at 0 width */
+            transition: width 0s;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #a21caf }
+        }
+        /* --- TYPEWRITER CSS END --- */
+
+        /* --- GLASS MORPHISM CSS START --- */
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        /* --- GLASS MORPHISM CSS END --- */
+    </style>
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen bg-gray-900">
 
-<a href="https://your-ai-page.com" target="_blank">
-  <div class="ai-button">
-    <img src="23441.png" alt="Attenza AI">
-  </div>
-</a>
+<div class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-rose-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500 origin-left hover:decoration-2 hover:text-rose-300 relative bg-neutral-800 h-64 w-96 border text-left p-3 text-gray-50 font-bold rounded-lg overflow-hidden before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-violet-500 before:rounded-full before:blur-lg after:absolute after:z-10 after:w-20 after:h-20 after:content[''] after:bg-rose-300 after:right-8 after:top-3 after:rounded-full after:blur-lg">
+
+    <div class="flex items-center h-full flex-col justify-between p-2">
+        
+        <div class="flex items-center w-full">
+            
+            <div class="loader mr-4 shrink-0">
+                <div class="box"></div>
+                <svg>
+                    <defs>
+                        <mask id="clipping">
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                            <polygon fill="white" points="0 0, 100 0, 100 100, 0 100"></polygon>
+                        </mask>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="relative flex-grow">
+                <input id="ai-input" type="text" placeholder="Type your query..."
+                       class="glass-morphism w-full h-12 rounded-full p-4 pl-6 text-sm text-white focus:outline-none placeholder-gray-300 transition-all duration-300"
+                       oninput="checkInput(this)">
+                
+                <button id="send-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-rose-500 rounded-full transition-opacity duration-300 opacity-0"
+                        style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-5 h-5">
+                        <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="text-xs text-center text-gray-400 mt-4 h-10 w-full flex flex-col justify-center items-center">
+            <span id="typewriter-container" class="w-full text-center">
+                </span>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    const messages = [
+        "Ask Attenza AI",
+        "Can I bunk tomorrow classes?"
+    ];
+    let messageIndex = 0;
+    let charIndex = 0;
+    const speed = 100; // Typing speed in ms
+    const container = document.getElementById('typewriter-container');
+
+    function typeWriter() {
+        const currentMessage = messages[messageIndex % messages.length];
+        
+        // Remove existing content/classes for clean reset
+        container.innerHTML = ''; 
+
+        const span = document.createElement('span');
+        span.classList.add('typewriter-text');
+        span.textContent = currentMessage;
+        
+        // Set the width for the animation
+        span.style.width = '0%';
+        container.appendChild(span);
+
+        // Force reflow to restart CSS animation
+        void span.offsetWidth;
+        span.style.width = '100%';
+
+        // Setup for the next message
+        setTimeout(() => {
+            messageIndex++;
+            // Reset the container content before typing the next one
+            setTimeout(typeWriter, 500); // 500ms delay after the message is fully displayed/retracted
+        }, 4000); // Wait for the animation to complete (4s is sufficient for the 3.5s animation + buffer)
+    }
+
+    // Start the typewriter effect
+    typeWriter();
+
+    // Conditional Send Button Logic
+    function checkInput(input) {
+        const sendBtn = document.getElementById('send-btn');
+        if (input.value.trim().length > 0) {
+            sendBtn.style.opacity = '1';
+        } else {
+            sendBtn.style.opacity = '0';
+        }
+    }
+</script>
 
 </body>
 </html>
