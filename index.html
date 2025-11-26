@@ -143,21 +143,25 @@
 
     .send-btn {
       display: none;
-      margin-left: 0.4rem;
-      width: 1.75rem;
-      height: 1.75rem;
-      border-radius: 9999px;
-      border: 1px solid #f9fafb;
-      background: transparent;
-      color: #f9fafb;
-      font-size: 1rem;
-      line-height: 1;
+      margin-left: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;               /* ← Circle! */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 600;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 0;
       cursor: pointer;
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* No transition, no hover! */
     }
 
     .send-btn.visible {
