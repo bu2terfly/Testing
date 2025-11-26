@@ -161,7 +161,7 @@
       cursor: pointer;
       flex-shrink: 0;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* No transition, no hover! */
+      /* No transition, no hover! */
     }
 
     .send-btn.visible {
@@ -193,7 +193,15 @@
           spellcheck="false"
         />
       </div>
-      <button class="send-btn" id="sendBtn">↑</button>
+
+      <!-- Updated send button with upward arrow icon -->
+      <button class="send-btn" id="sendBtn">
+        <svg viewBox="0 0 24 24" style="width:22px; height:22px; transform: scale(1.4);">
+          <path d="M12 5L18 11" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M12 5L6 11" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M12 5V19" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
