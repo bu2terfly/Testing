@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>See More Button</title>
+  <title>AI Card</title>
   <style>
     .see-more-btn {
       position: relative;
@@ -21,19 +21,22 @@
       transition: all 0.5s ease;
       transform-origin: left;
       background-clip: padding-box;
-
-      /* REMOVE underline */
-      text-decoration: none;
+      text-decoration: none;      /* no underline */
+      
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .see-more-btn::before,
     .see-more-btn::after {
       content: "";
       position: absolute;
-      border-radius: 9999px;
-      filter: blur(16px);
+      border-radius: 9999px;      /* rounded-full */
+      filter: blur(16px);         /* blur-lg */
       z-index: 10;
       transition: all 0.5s ease;
+      pointer-events: none;
     }
 
     .see-more-btn::before {
@@ -52,7 +55,7 @@
       background-color: #fda4af;
     }
 
-    /* REMOVE hover text color/underline effect */
+    /* Keep only glow movement on hover, no text click effect */
     .see-more-btn:hover {
       border-color: #fecdd3;
       text-decoration: none;
@@ -71,21 +74,208 @@
       right: -2rem;
     }
 
-    /* Image styling */
     .logo-img {
       height: 100%;
+      width: auto;
       object-fit: contain;
       position: relative;
       z-index: 20;
+      pointer-events: none;
+    }
+
+    .divider {
+      position: relative;
+      z-index: 20;
+      opacity: 0.7;
+      font-size: 1.25rem;
+      margin-right: 0.25rem;
+    }
+
+    .prompt-area {
+      position: relative;
+      z-index: 20;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .prompt-display {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .typewriter-text {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #f9fafb;
+      padding-right: 2px;
+      box-sizing: border-box;
+      animation: blink-caret 0.8s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #f9fafb; }
+    }
+
+    .prompt-input {
+      display: none;
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9rem;
+      color: #f9fafb;
+    }
+
+    .prompt-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .send-btn {
+      display: none;
+      margin-left: 0.4rem;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 9999px;
+      border: 1px solid #f9fafb;
+      background: transparent;
+      color: #f9fafb;
+      font-size: 1rem;
+      line-height: 1;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .send-btn.visible {
+      display: flex;
     }
   </style>
 </head>
-<body style="background:#111827; display:flex; align-items:center; justify-content:center; height:100vh;">
-  
-  <!-- Button with your PNG logo -->
-  <button class="see-more-btn">
-      <img src="23166.png" class="logo-img" alt="logo">
-  </button>
+<body style="background:#111827; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
 
+  <!-- AI Card -->
+  <div class="see-more-btn">
+    <!-- Your logo -->
+    <img src="23166.png" class="logo-img" alt="Logo">
+
+    <!-- Vertical bar -->
+    <span class="divider">|</span>
+
+    <!-- Typewriter / Input area -->
+    <div class="prompt-area" id="promptArea">
+      <div class="prompt-display">
+        <span class="typewriter-text" id="typewriterText"></span>
+        <input
+          type="text"
+          id="promptInput"
+          class="prompt-input"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="sentences"
+          spellcheck="false"
+        />
+      </div>
+      <button class="send-btn" id="sendBtn">↑</button>
+    </div>
+  </div>
+
+  <script>
+    // Typewriter setup
+    const phrases = ["ask attenza ai", "can I bunk tomorrow classes"];
+    const typewriterEl = document.getElementById("typewriterText");
+    const promptArea = document.getElementById("promptArea");
+    const promptInput = document.getElementById("promptInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    let currentPhraseIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+    let typingActive = true;
+    let typingTimeout;
+
+    function typeLoop() {
+      if (!typingActive) return;
+
+      const currentPhrase = phrases[currentPhraseIndex];
+      if (!isDeleting) {
+        // Typing
+        typewriterEl.textContent = currentPhrase.slice(0, currentCharIndex + 1);
+        currentCharIndex++;
+
+        if (currentCharIndex === currentPhrase.length) {
+          // Pause at full text
+          typingTimeout = setTimeout(() => {
+            isDeleting = true;
+            typeLoop();
+          }, 1200);
+          return;
+        }
+
+        typingTimeout = setTimeout(typeLoop, 120);
+      } else {
+        // Deleting
+        typewriterEl.textContent = currentPhrase.slice(0, currentCharIndex - 1);
+        currentCharIndex--;
+
+        if (currentCharIndex === 0) {
+          isDeleting = false;
+          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+          typingTimeout = setTimeout(typeLoop, 300);
+          return;
+        }
+
+        typingTimeout = setTimeout(typeLoop, 80);
+      }
+    }
+
+    function stopTypewriter() {
+      typingActive = false;
+      if (typingTimeout) clearTimeout(typingTimeout);
+      typewriterEl.style.display = "none";
+      promptInput.style.display = "block";
+    }
+
+    // Start typewriter on load
+    typeLoop();
+
+    // When user taps/clicks the text area -> focus input & stop typewriter
+    promptArea.addEventListener("click", () => {
+      if (typingActive) {
+        stopTypewriter();
+      }
+      promptInput.focus();
+    });
+
+    // Show arrow when user types
+    promptInput.addEventListener("input", () => {
+      if (promptInput.value.trim().length > 0) {
+        sendBtn.classList.add("visible");
+      } else {
+        sendBtn.classList.remove("visible");
+      }
+    });
+
+    // Optional: what happens when clicking the arrow
+    sendBtn.addEventListener("click", () => {
+      const value = promptInput.value.trim();
+      if (!value) return;
+      // Here you can send 'value' to your backend / AI / console
+      console.log("User asked:", value);
+      // For now just clear input
+      promptInput.value = "";
+      sendBtn.classList.remove("visible");
+    });
+  </script>
 </body>
 </html>
