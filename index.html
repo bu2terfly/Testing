@@ -356,11 +356,13 @@
     }
 
     .divider {
-      position: relative;
-      z-index: 20;
-      opacity: 0.7;
-      font-size: 1.25rem;
-      margin: 0 0 0 0;
+      width: 2px;
+      height: 18px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 4px;
+
+      margin-left: 0.6rem;   /* move right from logo */
+      margin-right: 0.5rem;
     }
 
     .prompt-area {
@@ -438,9 +440,9 @@
     }
 
     .logo-loader-wrapper {
-      height: 2.4rem;
-      width: 2.4rem;
-      margin-left: -0.2rem;
+      height: 2.5rem;
+      width: 2.5rem;
+      margin-left: -0.1rem;
       position: relative;
       z-index: 20;
       flex-shrink: 0;
@@ -646,7 +648,7 @@ Once you connect Gemini and your attendance backend, this will show real, detail
       </div>
 
       <!-- Vertical bar -->
-      <span class="divider">|</span>
+      <span class="divider"></span>
 
       <!-- Typewriter / Input area -->
       <div class="prompt-area" id="promptArea">
