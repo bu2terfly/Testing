@@ -1,119 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Notebook Page</title>
-
-  <!-- Gaegu font -->
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
-
-  <!-- Signature font -->
-  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --line-gap: 0.95rem;
-      --line-light: 0.85rem;
-      --line-dark: 0.95rem;
-    }
-
-    .page {
-      position: relative;
-      box-sizing: border-box;
-      max-width: 380px;
-      font-family: "Gaegu", cursive;
-      font-size: 16px;
-      background: #fffdf6;
-      background-image: linear-gradient(#f5f5f0 var(--line-light), #ccc var(--line-dark));
-      background-size: 100% var(--line-gap);
-
-      padding: 0.7rem 0.7rem 0.8rem 5.5rem;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      border-radius: 0;
-      overflow: hidden;
-      line-height: 1.05rem;
-    }
-
-    .page::before,
-    .page::after {
-      position: absolute;
-      content: "";
-      bottom: 4px;
-      width: 45%;
-      height: 7px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
-      z-index: -1;
-      transition: 0.3s ease;
-    }
-
-    .page::before { left: 18px; transform: skew(-3deg) rotate(-2deg); }
-    .page::after  { right: 18px; transform: skew(3deg) rotate(2deg); }
-
-    .margin {
-      position: absolute;
-      border-left: 1px solid #d88;
-      height: 100%;
-      left: 4.3rem;
-      top: 0;
-    }
-
-    .page p {
-      margin: 0;
-      text-indent: 0.4rem;
-      padding-bottom: 0.4rem;
-      color: #111;
-      line-height: 1.05rem;
-    }
-
-    .note-logo {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 75px;
-      height: 75px;
-      object-fit: contain;
-      pointer-events: none;
-    }
-
-    /* BOTTOM-RIGHT teacher signature */
-    .teacher-mark {
-      position: absolute;
-      bottom: 0.4rem;
-      right: 1rem;
-
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-
-      transform: rotate(-12deg); /* more handwritten tilt */
-    }
-
-    .teacher-sign {
-      font-family: "Cedarville Cursive", cursive;
-      font-size: 20px;
-      color: #b71c1c;
-      letter-spacing: 1px;
-      transform: rotate(4deg); /* opposite tilt for more natural feel */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Auth Demo (Email Link & Google)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .hidden { display: none; }
+        input[type="email"] { width: 80%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        button.google { background-color: #db4437; }
+        button:hover { opacity: 0.9; }
+        pre { background-color: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .separator { margin: 15px 0; border-top: 1px solid #ddd; }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>Secure Login Demo</h1>
+        
+        <div id="auth-section" class="card">
+            <h2>Test All Sign-in Methods</h2>
+            
+            <button onclick="signInWithGoogle()" class="google">
+                <i class="fa fa-google"></i> Sign in with Google
+            </button>
+            
+            <div class="separator">OR</div>
+            
+            <p>Use Email Link (Secure & Passwordless):</p>
+            <input type="email" id="email-input" placeholder="Enter your email address" autocomplete="email">
+            <button onclick="sendAuthLink()">Send Login Link</button>
+            
+            <p id="auth-message" style="margin-top: 15px; font-weight: bold;"></p>
+        </div>
 
-  <div class="page">
-    <img src="your-logo.png" alt="Logo" class="note-logo">
-    <div class="margin"></div>
-
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Nam vitae justo ut urna consequat luctus.
-    </p>
-
-    <!-- Teacher mark bottom right -->
-    <div class="teacher-mark">
-      <span class="teacher-sign">Principal</span>
+        <div id="home-section" class="card hidden">
+            <h2 id="welcome-message">Welcome Back!</h2>
+            <p>You are signed in. Here are your account details:</p>
+            
+            <pre id="user-details-output"></pre>
+            
+            <button onclick="signOutUser()" style="margin-top: 20px;">Sign Out</button>
+        </div>
     </div>
-  </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <script src="app.js"></script>
 </body>
 </html>
