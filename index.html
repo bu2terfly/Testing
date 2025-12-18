@@ -1,230 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendmark with Saar AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Define primary colors based on the image */
-            --primary-orange: #ff7f00; /* For buttons and main text */
-            --text-dark: #1f1f1f; /* For body text */
-            --text-light: #ffffff; /* For 'saar ai' and button text */
-            --bg-light: #ffffff; /* Main background */
-            --info-icon-color: #777; /* For the info icon */
-        }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Attendmark</title>
 
-        /* ---------------------------------------------------- */
-        /* BASE STYLES */
-        /* ---------------------------------------------------- */
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-light);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Mimics a mobile screen size/aspect ratio, adjust as needed */
-            min-height: 100vh;
-        }
+<style>
+:root {
+  --purple:#918BFF;
+  --dark:#1F1A1C;
+}
 
-        .container {
-            width: 100%;
-            max-width: 400px; /* Typical max width for a mobile-centric page */
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-grow: 1;
-        }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        /* ---------------------------------------------------- */
-        /* HEADER/INTRO TEXT */
-        /* ---------------------------------------------------- */
+body {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:#FFF;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding-bottom:env(safe-area-inset-bottom);
+}
 
-        .header-section {
-            padding-top: 40px;
-        }
+.wrapper {
+  width:100%;
+  max-width:420px;
+  min-height:100vh;
+  padding:22px 24px;
+  display:flex;
+  flex-direction:column;
+}
 
-        .title {
-            font-size: 2.5em; /* Adjust size to fit the visual weight */
-            font-weight: 700;
-            line-height: 1.1;
-            color: var(--primary-orange);
-            margin-bottom: 0.2em;
-        }
+.header {
+  flex-shrink:0;
+}
 
-        .title span {
-            color: var(--text-dark); /* Color change for 'with' and 'ai' */
-        }
+.title {
+  font-size:38px;
+  font-weight:800;
+  line-height:1.05;
+  color:var(--purple);
+}
 
-        /* Style for the "saar ai" part */
-        .saar-ai {
-            color: var(--text-dark); /* Color change for 'saar ai' */
-            font-weight: 700;
-        }
+.with {
+  position:absolute;
+  margin-top:-34px;
+  margin-left:120px;
+  font-family:'Caveat',cursive;
+  font-size:38px;
+  transform:rotate(-13deg);
+}
 
-        .subtitle {
-            font-size: 1.2em;
-            font-weight: 600;
-            line-height: 1.3;
-            color: var(--text-dark);
-            margin-top: 20px;
-            padding-right: 20px; /* Minor adjustment for better text flow */
-        }
-        
-        /* ---------------------------------------------------- */
-        /* ILLUSTRATION (PLACEHOLDER) - MODIFIED */
-        /* ---------------------------------------------------- */
+.subtitle {
+  margin-top:10px;
+  font-size:15px;
+  color:#555;
+}
 
-        .illustration-section {
-            margin: 40px 0;
-            text-align: center;
-            /* Ensure the illustration takes up its space directly */
-            width: 100%;
-            padding: 0; /* Remove any padding that might simulate a card */
-        }
+.hero {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:10px 0;
+}
 
-        /* Placeholder image style - Simpler style without rounded corners or shadows */
-        .illustration-placeholder {
-            display: block;
-            width: 100%;
-            max-height: 350px; 
-            height: auto;
-            background-color: transparent; /* Ensure transparent background */
-            line-height: 350px; 
-            text-align: center;
-            font-size: 1.1em;
-            color: var(--info-icon-color);
-            /* Removed border-radius */
-            /* Added padding-bottom to lift the illustration slightly from the bottom edge */
-            padding-bottom: 20px; 
-            box-sizing: border-box;
-        }
+.hero h2 {
+  font-size:22px;
+  font-weight:300;
+  color:#333;
+}
 
-        /* ---------------------------------------------------- */
-        /* FOOTER/INFO/BUTTONS */
-        /* ---------------------------------------------------- */
+.hero h2 b {
+  font-weight:700;
+  color:#000;
+}
 
-        .footer-section {
-            width: 100%;
-            padding: 20px 0 30px; /* Padding for the bottom section */
-        }
+.illustration {
+  flex:1;
+  max-height:42vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-top:8px;
+}
 
-        .info-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-top: 1px solid #eee;
-            /* NOTE: The original image does not show a border-bottom, only a slight separation. 
-               I'll remove the bottom border for a cleaner look consistent with the image bottom layout. */
-            margin-bottom: 20px;
-            color: var(--text-dark);
-        }
+.illustration img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
-        .info-bar p {
-            margin: 0;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-        }
+.list {
+  flex-shrink:0;
+  text-align:left;
+  line-height:1.32;
+  padding-left:4px;
+  margin-bottom:12px;
+}
 
-        /* Simple placeholder for the info icon (i) */
-        .info-icon {
-            font-style: normal;
-            font-size: 1.2em;
-            margin-right: 8px;
-            color: var(--info-icon-color);
-        }
+.list div {
+  font-size:26px;
+  font-weight:600;
+  white-space:nowrap;
+}
 
-        .arrow-icon {
-             /* Using CSS triangle for simple down arrow */
-            width: 0; 
-            height: 0; 
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid var(--info-icon-color);
-            cursor: pointer;
-        }
+.e1 { color:#D1D1D1; }
+.e2 { color:#A3A3A3; }
 
+.b {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:var(--purple);
+}
 
-        .button-group {
-            display: flex;
-            gap: 15px; /* Spacing between the buttons */
-        }
+.b span {
+  font-size:26px;
+}
 
-        .btn {
-            flex: 1;
-            padding: 15px 10px;
-            border: none;
-            border-radius: 8px; /* Slightly rounded corners */
-            font-size: 1.1em;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+.e3 { color:#A3A3A3; }
+.e4 { color:#E1E1E1; }
 
-        .btn-login {
-            background-color: var(--primary-orange);
-            color: var(--text-light);
-        }
+.button-area {
+  flex-shrink:0;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 6px);
+}
 
-        .btn-create {
-            /* The image shows the 'Create account' button is slightly less saturated/lighter 
-               than 'Log in', achieved here with a slightly adjusted background color or opacity. */
-            background-color: var(--primary-orange);
-            color: var(--text-light);
-            /* Using a slight hue adjustment to mimic the color difference */
-            background-color: #ff9933; 
-        }
+.btn {
+  width:100%;
+  height:64px;
+  border-radius:200px;
+  background:var(--dark);
+  color:#FFF;
+  font-size:18px;
+  font-weight:600;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 14px 0 26px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  cursor:pointer;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
-        
-    </style>
+.btn-icon {
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:var(--purple);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.btn-icon span {
+  color:white;
+  transform:rotate(-45deg);
+  font-size:26px;
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        
-        <div class="main-content">
-            <div class="header-section">
-                <h1 class="title">
-                    Attendmark <span>with</span><br>
-                    <span class="saar-ai">saar ai</span>
-                </h1>
-                
-                <p class="subtitle">
-                    A student driven attendance tracker where student can get detailed data about attendance Realtime update, and a ai who can help in study and doubt
-                </p>
-            </div>
-            
-            <div class="illustration-section">
-                <img src="27920.png" alt="Student tracking attendance graph" class="illustration-placeholder">
-            </div>
-        </div>
+<div class="wrapper">
 
-        <div class="footer-section">
-            
-            <div class="info-bar">
-                <p>
-                    <span class="info-icon">&#9432;</span> How the app works ? know here
-                </p>
-                <div class="arrow-icon"></div>
-            </div>
+  <div class="header">
+    <div class="title">Attendmark</div>
+    <div class="title">Saar AI</div>
+    <div class="with">with</div>
+    <div class="subtitle">student academic & attendance responder</div>
+  </div>
 
-            <div class="button-group">
-                <button class="btn btn-login">Log in</button>
-                <button class="btn btn-create">Create account</button>
-            </div>
-        </div>
+  <div class="hero">
+    <h2>Sustainability for <b>the bottom line</b></h2>
+    <div class="illustration">
+      <img src="https://i.ibb.co/tYjnjcs/illus.png"/>
     </div>
+  </div>
+
+  <div class="list">
+    <div class="e1">Electronics</div>
+    <div class="e2">Refurbished</div>
+    <div class="b">
+      <span class="material-icons-round">arrow_forward</span>
+      Books
+    </div>
+    <div class="e3">Furniture</div>
+    <div class="e4">Fashion</div>
+  </div>
+
+  <div class="button-area">
+    <div class="btn">
+      Get Started
+      <div class="btn-icon">
+        <span class="material-icons-round">arrow_forward</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.querySelector('.btn').onclick = () => alert("Clicked!");
+</script>
 </body>
 </html>
