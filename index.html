@@ -6,19 +6,28 @@
 <title>Attendmark</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 
 <style>
 :root {
   --purple:#918BFF;
   --dark:#1F1A1C;
   --bg:#f5f3ef;
+
+  --btn-bg:#3a3336;
+  --arrow-bg:#8381fc;
+
+  /* ↓ scaled-down effect vars */
+  --text:#111;
+  --accent:#8381fc;
+  --item-h:34px;
+  --arrow-w:26px;
+  --active-offset:calc(var(--arrow-w) + 6px);
+  --arrow-offset:calc(var(--item-h) / 2);
+  --ease:cubic-bezier(0.4,0,0.2,1);
 }
 
-/* RESET */
 * { margin:0; padding:0; box-sizing:border-box; }
 
-/* Fade-in animation */
 body {
   font-family:'Plus Jakarta Sans',sans-serif;
   background:var(--bg);
@@ -26,7 +35,6 @@ body {
   display:flex;
   justify-content:center;
   align-items:center;
-  padding-bottom:env(safe-area-inset-bottom);
   position:relative;
   overflow:hidden;
   opacity:0;
@@ -41,8 +49,7 @@ body {
 body::before {
   content:"";
   position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
+  inset:0;
   pointer-events:none;
   background-image:
     linear-gradient(to right, rgba(0,0,0,0.14) 1px, transparent 1px),
@@ -52,37 +59,22 @@ body::before {
   z-index:1;
 }
 
-/* Light Noise Texture */
-body::after {
-  content:"";
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  pointer-events:none;
-  opacity:0.07;
-  mix-blend-mode:overlay;
-  z-index:2;
-}
-
-/* Neutral Gradient Blobs */
+/* BLOBS */
 .blob {
   position:absolute;
   width:460px;
   height:460px;
   border-radius:50%;
-  z-index:0;
   filter:blur(120px);
   opacity:0.22;
-  pointer-events:none;
+  z-index:0;
 }
 .blob1 {
-  top:-160px;
-  right:-140px;
+  top:-160px; right:-140px;
   background:linear-gradient(135deg,#F7F4EE,#DFDACE);
 }
 .blob2 {
-  bottom:-160px;
-  left:-140px;
+  bottom:-160px; left:-140px;
   background:linear-gradient(135deg,#EDE9E2,#D8D4CC);
 }
 
@@ -97,21 +89,20 @@ body::after {
   z-index:5;
 }
 
-/* header */
-.header { flex-shrink:0; }
+/* HEADER */
+.header { position:relative; }
 
 .title {
   font-size:38px;
   font-weight:800;
   line-height:1.05;
   color:var(--purple);
-  position:relative;
 }
 
 .with {
   position:absolute;
-  margin-top:-34px;
-  margin-left:120px;
+  top:42px;
+  left:120px;
   font-family:'Caveat',cursive;
   font-size:38px;
   transform:rotate(-13deg);
@@ -124,118 +115,154 @@ body::after {
   color:#444;
 }
 
-/* hero */
+/* MENU */
+.menu-btn {
+  position:absolute;
+  top:6px;
+  right:0;
+  width:26px;
+  height:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.menu-btn span {
+  height:2.5px;
+  background:#222;
+  border-radius:2px;
+}
+
+/* HERO */
 .hero {
   flex:1;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
-  text-align:center;
-  padding:12px 0;
 }
-
-.hero h2 {
-  font-size:22px;
-  font-weight:300;
-  color:#333;
-}
-
-.hero h2 b {
-  font-weight:700;
-  color:#000;
-}
-
 .illustration {
-  flex:1;
   max-height:42vh;
   width:100%;
-  margin-top:10px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
-
 .illustration img {
   width:100%;
   object-fit:contain;
 }
 
-/* list */
-.list {
-  flex-shrink:0;
-  text-align:left;
-  line-height:1.32;
-  padding-left:4px;
+/* ===============================
+   FIXED ANIMATED TEXT HIERARCHY
+=============================== */
+.text-anim {
+  position:relative;
   margin-bottom:14px;
 }
 
-.list div {
-  font-size:26px;
+/* arrow and text share same left edge */
+.arrow {
+  position:absolute;
+  left:0;
+  top:50%;
+  width:var(--arrow-w);
+  height:var(--arrow-w);
+  transform:translateY(calc(-50% - var(--arrow-offset)));
+  pointer-events:none;
+}
+
+.arrow svg {
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.viewport {
+  position:relative;
+  height:calc(var(--item-h) * 6);
+  overflow:hidden;
+}
+
+.list {
+  position:absolute;
+  left:0;
+  right:0;
+  will-change:transform;
+}
+
+.item {
+  height:var(--item-h);
+  display:flex;
+  align-items:center;
+  font-size:1.45rem;
   font-weight:600;
   white-space:nowrap;
+  color:var(--text);
+  opacity:0.25;
+  transition:
+    transform .45s var(--ease),
+    opacity .45s var(--ease),
+    color .45s var(--ease),
+    font-size .45s var(--ease);
 }
 
-.e1 { color:#D0D0D0; }
-.e2 { color:#A9A9A9; }
+.item.near { opacity:0.55; }
 
-.b {
+.item.active {
+  opacity:1;
+  color:var(--accent);
+  font-size:1.75rem;
+  transform:translateX(var(--active-offset));
+}
+
+.item.idle {
+  animation:idlePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes idlePulse {
+  0%,100% { transform:translateX(var(--active-offset)); }
+  50% { transform:translateX(calc(var(--active-offset) + 3px)); }
+}
+
+/* BUTTON */
+.button-area { padding-bottom:16px; }
+
+.get-started {
+  position:relative;
   display:flex;
   align-items:center;
-  gap:6px;
-  color:var(--purple);
-  transition:opacity .25s;
-}
-.b:hover { opacity:0.7; }
-
-.b span {
-  font-size:26px;
-}
-
-.e3 { color:#A9A9A9; }
-.e4 { color:#E1E1E1; }
-
-/* button */
-.button-area {
-  flex-shrink:0;
-  padding-bottom:calc(env(safe-area-inset-bottom) + 12px);
-}
-
-.btn {
-  width:100%;
   height:64px;
-  border-radius:200px;
-  background:var(--dark);
-  color:#FFF;
-  font-size:18px;
+  padding-left:28px;
+  padding-right:88px;
+  background:var(--btn-bg);
+  color:#fff;
+  font-size:19px;
   font-weight:600;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 14px 0 26px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.25);
-  cursor:pointer;
-  transition:0.25s ease;
+  border-radius:999px;
+  text-decoration:none;
+  box-shadow:0 6px 18px rgba(0,0,0,.25);
 }
-
-.btn:hover {
-  transform:translateY(-2px);
-}
-
-.btn-icon {
-  width:50px;
-  height:50px;
+.get-started .arrow-btn {
+  position:absolute;
+  top:3px;
+  right:3px;
+  width:58px;
+  height:58px;
+  background:var(--arrow-bg);
   border-radius:50%;
-  background:var(--purple);
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
 }
-
-.btn-icon span {
-  color:white;
-  transform:rotate(-45deg);
-  font-size:26px;
+.get-started svg {
+  width:40px;
+  height:40px;
+  stroke:#fff;
+  stroke-width:1.6;
+  fill:none;
 }
 </style>
 </head>
@@ -245,40 +272,117 @@ body::after {
 <div class="blob blob2"></div>
 
 <div class="wrapper">
+
   <div class="header">
     <div class="title">Attendmark</div>
     <div class="title">Saar AI</div>
     <div class="with">with</div>
     <div class="subtitle">student academic & attendance responder</div>
+    <div class="menu-btn"><span></span><span></span></div>
   </div>
 
   <div class="hero">
-    <h2>Sustainability for <b>the bottom line</b></h2>
     <div class="illustration">
-      <img src="30719.png"/>
+      <img src="30719.png" alt="">
     </div>
   </div>
 
-  <div class="list">
-    <div class="e1">Electronics</div>
-    <div class="e2">Refurbished</div>
-    <div class="b"><span class="material-icons-round">arrow_forward</span> Books</div>
-    <div class="e3">Furniture</div>
-    <div class="e4">Fashion</div>
+  <div class="text-anim">
+    <div class="arrow">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 12h14M13 5l6 7-6 7"/>
+      </svg>
+    </div>
+    <div class="viewport">
+      <div class="list" id="list"></div>
+    </div>
   </div>
 
   <div class="button-area">
-    <div class="btn">
+    <a class="get-started" href="#">
       Get Started
-      <div class="btn-icon">
-        <span class="material-icons-round">arrow_forward</span>
+      <div class="arrow-btn">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 17L17 7M9 7h8v8"/>
+        </svg>
       </div>
-    </div>
+    </a>
   </div>
+
 </div>
 
 <script>
-document.querySelector('.btn').onclick = () => alert("Clicked!");
+const baseLabels = [
+  "Track  attendance",
+  "Get  detailed  stats",
+  "Subjects  analytics",
+  "Plan  safebunks",
+  "Tips  &  roadmap",
+  "Ask  doubts  to  AI",
+  "Log  short  notes",
+  "Realtime  counts",
+  "View  edit  anytime",
+  "College  friendly"
+];
+
+const repeatCount = 8;
+const labels = Array.from({ length: repeatCount }, () => baseLabels).flat();
+
+const pause = 700;
+const move  = 500;
+
+const list = document.getElementById("list");
+
+labels.forEach(text => {
+  const el = document.createElement("div");
+  el.className = "item";
+  el.textContent = text;
+  list.appendChild(el);
+});
+
+const items = [...document.querySelectorAll(".item")];
+const VISIBLE_ROWS = 6;
+const ACTIVE_ROW_INDEX = 2;
+let index = ACTIVE_ROW_INDEX;
+
+function getItemHeight() {
+  return parseInt(getComputedStyle(document.documentElement)
+    .getPropertyValue("--item-h"));
+}
+
+const lastSafeIndex =
+  labels.length - 1 - (VISIBLE_ROWS - 1 - ACTIVE_ROW_INDEX);
+
+function render() {
+  const h = getItemHeight();
+  list.style.transform =
+    `translateY(${-(index - ACTIVE_ROW_INDEX) * h}px)`;
+
+  items.forEach((el, i) => {
+    el.classList.remove("active", "near", "idle");
+    const d = Math.abs(i - index);
+    if (d === 0) el.classList.add("active");
+    else if (d === 1) el.classList.add("near");
+  });
+}
+
+function step() {
+  if (index >= lastSafeIndex) {
+    clearInterval(timer);
+    items[index].classList.add("idle");
+    list.style.transition = "none";
+    render();
+    return;
+  }
+  index++;
+  list.style.transition =
+    `transform ${move}ms cubic-bezier(0.4,0,0.2,1)`;
+  render();
+}
+
+window.addEventListener("resize", render);
+render();
+const timer = setInterval(step, pause + move);
 </script>
 </body>
 </html>
