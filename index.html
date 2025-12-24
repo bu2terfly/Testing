@@ -261,15 +261,18 @@ body::after {
 /* ===============================
    FIXED BOTTOM BUTTON
 =============================== */
-.button-area {
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:420px;
-  z-index: 10;
-  bottom: calc(16px + env(safe-area-inset-bottom));
-}
+.button-area {  
+  position: fixed;  
+  bottom: 16px;  
+  left: 0;  
+  right: 0;  
+  width: 100%;  
+  display: flex;  
+  justify-content: center;  
+  padding: 0 17px;  
+  z-index: 1000;  
+  pointer-events: none;  
+    }  
 
 .get-started {
   margin: 0 25px;
