@@ -21,7 +21,6 @@
   --accent:#8381fc;
   --item-h:34px;
   --arrow-w:26px;
-  --active-offset:calc(var(--arrow-w) + 6px);
   --arrow-offset:calc(var(--item-h) / 2);
   --ease:cubic-bezier(0.4,0,0.2,1);
 }
@@ -35,7 +34,7 @@ body {
   position:relative;
   overflow-x:hidden;
   padding:16px;
-  padding-bottom:120px; /* original */
+  padding-bottom:120px;
 }
 
 /* ================= HEADER (UNCHANGED) ================= */
@@ -66,7 +65,7 @@ body {
   letter-spacing:.12em;
 }
 
-/* STRIP (UNCHANGED) */
+/* ================= STRIP (UNCHANGED) ================= */
 .strip {
   margin-top:25px;
   margin-left:-16px;
@@ -98,7 +97,7 @@ body {
   to { transform:translateX(-50%); }
 }
 
-/* MENU BUTTON (UNCHANGED) */
+/* ================= MENU BUTTON (UNCHANGED) ================= */
 .menu-btn {
   position:absolute;
   top:20px;
@@ -118,7 +117,7 @@ body {
 /* ================= HERO (UNCHANGED) ================= */
 .hero {
   display:flex;
-  margin-top: 30px;
+  margin-top:30px;
   justify-content:center;
   align-items:center;
 }
@@ -135,25 +134,26 @@ body {
   object-fit:contain;
 }
 
-/* ================= TEXT ANIMATION (UNCHANGED) ================= */
+/* ================= TEXT ANIMATION (CENTERED + FIXED) ================= */
 .text-anim {
   position:relative;
-  height:calc(var(--item-h) * 6);
-  overflow:hidden;
-  margin-top:8px;
-  margin-left:18px;
+  height:calc(var(--item-h) * 3);
+  margin-top:12px;
+  overflow-y:hidden;
+  overflow-x:visible;
 }
 
-.arrow {
+/* Fixed arrows (DO NOT MOVE) */
+.fixed-arrow {
   position:absolute;
-  left:0;
   top:50%;
   width:var(--arrow-w);
   height:var(--arrow-w);
-  transform:translateY(calc(-50% - var(--arrow-offset)));
+  transform:translateY(-50%);
+  pointer-events:none;
 }
 
-.arrow svg {
+.fixed-arrow svg {
   width:100%;
   height:100%;
   fill:none;
@@ -161,13 +161,39 @@ body {
   stroke-width:2.5;
 }
 
-.viewport { height:100%; overflow:hidden; }
-.list { position:absolute; left:0; right:0; }
+.fixed-arrow.left { left:4px; }
+.fixed-arrow.right {
+  right:4px;
+  transform:translateY(-50%) rotate(180deg);
+}
+
+/* viewport */
+.viewport {
+  height:100%;
+  overflow-y:hidden;
+  overflow-x:visible;
+}
+
+/* centering wrapper */
+.list-center {
+  position:relative;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+/* animated list */
+.list {
+  position:absolute;
+  left:0;
+  right:0;
+}
 
 .item {
+  position:relative;
   height:var(--item-h);
   display:flex;
   align-items:center;
+  justify-content:center;
   font-size:1.45rem;
   font-weight:600;
   white-space:nowrap;
@@ -179,22 +205,16 @@ body {
     color .45s var(--ease),
     font-size .45s var(--ease);
 }
+
 .item.near { opacity:0.55; }
+
 .item.active {
   opacity:1;
   color:var(--accent);
   font-size:1.75rem;
-  transform:translateX(var(--active-offset));
-}
-.item.idle {
-  animation:idlePulse 2.2s ease-in-out infinite;
-}
-@keyframes idlePulse {
-  0%,100% { transform:translateX(var(--active-offset)); }
-  50% { transform:translateX(calc(var(--active-offset) + 3px)); }
 }
 
-/* ================= NEW SECTION ONLY ================= */
+/* ================= CARDS (UNCHANGED) ================= */
 .cards-wrap {
   margin-top:40px;
   padding:22px;
@@ -234,21 +254,21 @@ body {
   line-height:1.5;
 }
 
-/* ================= GET STARTED BUTTON (100% ORIGINAL) ================= */
+/* ================= GET STARTED BUTTON (UNCHANGED) ================= */
 .button-area {
-  position: fixed;
-  bottom: 16px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 0 32px;
-  z-index: 1000;
+  position:fixed;
+  bottom:16px;
+  left:0;
+  right:0;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  padding:0 32px;
+  z-index:1000;
 }
 
 .get-started {
-  margin: 0 70px;
+  margin:0 70px;
   position:relative;
   display:flex;
   align-items:center;
@@ -312,17 +332,25 @@ body {
 </div>
 
 <div class="text-anim">
-  <div class="arrow">
+  <div class="fixed-arrow left">
     <svg viewBox="0 0 24 24">
       <path d="M5 12h14M13 5l6 7-6 7"/>
     </svg>
   </div>
+
   <div class="viewport">
-    <div class="list" id="list"></div>
+    <div class="list-center">
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+  <div class="fixed-arrow right">
+    <svg viewBox="0 0 24 24">
+      <path d="M5 12h14M13 5l6 7-6 7"/>
+    </svg>
   </div>
 </div>
 
-<!-- NEW CONTENT BELOW -->
 <section class="cards-wrap">
   <div class="cards-title">Trusted by ambitious students</div>
   <div class="cards">
@@ -353,7 +381,7 @@ body {
 </div>
 
 <script>
-/* ORIGINAL SCRIPT (UNCHANGED) */
+/* ================= ORIGINAL SCRIPT (LOGIC UNCHANGED) ================= */
 const baseLabels = [
   "Track  attendance",
   "Get  detailed  stats",
@@ -379,8 +407,8 @@ labels.forEach(text => {
 });
 
 const items = [...document.querySelectorAll(".item")];
-const VISIBLE_ROWS = 6;
-const ACTIVE_ROW_INDEX = 2;
+const VISIBLE_ROWS = 3;
+const ACTIVE_ROW_INDEX = 1;
 let index = ACTIVE_ROW_INDEX;
 
 function getItemHeight() {
@@ -407,7 +435,6 @@ function render() {
 function step() {
   if (index >= lastSafeIndex) {
     clearInterval(timer);
-    items[index].classList.add("idle");
     list.style.transition = "none";
     render();
     return;
