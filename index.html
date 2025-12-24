@@ -130,7 +130,7 @@ body::after {
   to { transform:translateX(-50%); }
 }
 
-/* ===== Menu button (PRESERVED) ===== */
+/* ===== Menu Button ===== */
 .menu-btn {
   position:absolute;
   top:20px;
@@ -141,23 +141,27 @@ body::after {
   flex-direction:column;
   justify-content:space-between;
 }
-
 .menu-btn span {
   height:3px;
   background:#353839;
   border-radius:2.5px;
 }
 
-/* ===== Hero (FIXED) ===== */
-.hero {
-  display:block;                 /* NO flex-grow */
+/* ===== Dynamic Spacer (ONLY HERE) ===== */
+.spacer {
+  flex:1 1 auto;
+  min-height:8px;
+  max-height:14vh;
 }
 
+/* ===== Hero ===== */
+.hero {
+  display:block;
+}
 .illustration {
   margin-left:-16px;
   margin-right:-16px;
 }
-
 .illustration img {
   width:100%;
   max-height:36vh;
@@ -165,7 +169,7 @@ body::after {
   object-fit:contain;
 }
 
-/* ===== Animated text (CONTAINED) ===== */
+/* ===== Text Animation ===== */
 .text-anim {
   position:relative;
   margin-left:12px;
@@ -190,7 +194,7 @@ body::after {
 }
 
 .viewport {
-  position:relative;              /* CRITICAL FIX */
+  position:relative;
   height:calc(var(--item-h) * 4.6);
   overflow:hidden;
 }
@@ -239,7 +243,7 @@ body::after {
 /* ===== Button ===== */
 .button-area {
   margin-top:-22px;
-  padding-bottom:16px;
+  padding-bottom:28px; /* TARGET DISTANCE FROM SCREEN BOTTOM */
   position:relative;
   z-index:10;
 }
@@ -302,6 +306,9 @@ body::after {
     <div class="menu-btn"><span></span><span></span></div>
   </div>
 
+  <!-- DYNAMIC SPACE ONLY HERE -->
+  <div class="spacer"></div>
+
   <div class="hero">
     <div class="illustration">
       <img src="30719.png" alt="">
@@ -356,9 +363,7 @@ const move = 500, pause = 700;
 function render() {
   const h = parseInt(getComputedStyle(document.documentElement)
     .getPropertyValue("--item-h"));
-  list.style.transform =
-    `translateY(${-(index - 2) * h}px)`;
-
+  list.style.transform = `translateY(${-(index - 2) * h}px)`;
   items.forEach((el, i) => {
     el.classList.remove("active", "near", "idle");
     if (i === index) el.classList.add("active");
@@ -374,8 +379,7 @@ const timer = setInterval(() => {
     return;
   }
   index++;
-  list.style.transition =
-    `transform ${move}ms cubic-bezier(0.4,0,0.2,1)`;
+  list.style.transition = `transform ${move}ms cubic-bezier(0.4,0,0.2,1)`;
   render();
 }, pause + move);
 </script>
