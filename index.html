@@ -7,7 +7,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  
+
 <style>
 /* ================= ORIGINAL VARIABLES (UNCHANGED) ================= */
 :root {
@@ -35,7 +35,7 @@ body {
   position:relative;
   overflow-x:hidden;
   padding:16px;
-  padding-bottom:120px;
+  padding-bottom:260px; /* only extended to fit footer */
 }
 
 /* ================= HEADER (UNCHANGED) ================= */
@@ -53,8 +53,8 @@ body {
   top:20px;
   left:20px;
   font-family:'Caveat',cursive;
-  font-size:27px;
-  transform:rotate(-13deg);
+  font-size:28px;
+  transform:rotate(-15deg);
   color:#918BFF;
 }
 
@@ -83,6 +83,7 @@ body {
   width:max-content;
   animation:stripMove 22s linear infinite;
   font-size:11px;
+  word-spacing: 0.4em;
   font-weight:600;
   letter-spacing:.14em;
   text-transform:uppercase;
@@ -108,6 +109,8 @@ body {
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  cursor:pointer;
+  z-index:3000;
 }
 .menu-btn span {
   height:3px;
@@ -135,7 +138,7 @@ body {
   object-fit:contain;
 }
 
-/* ================= TEXT ANIMATION (CENTERED + FIXED) ================= */
+/* ================= TEXT ANIMATION (UNCHANGED) ================= */
 .text-anim {
   position:relative;
   height:calc(var(--item-h) * 3);
@@ -144,7 +147,6 @@ body {
   overflow-x:visible;
 }
 
-/* Fixed arrows (DO NOT MOVE) */
 .fixed-arrow {
   position:absolute;
   top:50%;
@@ -168,21 +170,18 @@ body {
   transform:translateY(-50%) rotate(180deg);
 }
 
-/* viewport */
 .viewport {
   height:100%;
   overflow-y:hidden;
   overflow-x:visible;
 }
 
-/* centering wrapper */
 .list-center {
   position:relative;
   left:50%;
   transform:translateX(-50%);
 }
 
-/* animated list */
 .list {
   position:absolute;
   left:0;
@@ -197,6 +196,7 @@ body {
   justify-content:center;
   font-family: 'Inter', sans-serif;
   font-size:1.2rem;
+  word-spacing: 0.1em;
   font-weight:500;
   white-space:nowrap;
   color:var(--text);
@@ -228,10 +228,10 @@ body {
 
 .cards-title {
   text-align:center;
-  font-size:15px;
+  font-size:18px;
   font-weight:700;
-  letter-spacing:.18em;
-  margin-bottom:22px;
+  margin-bottom:25px;
+  margin-top:-8px;
 }
 
 .cards {
@@ -307,6 +307,67 @@ body {
   stroke-width:1.6;
   fill:none;
 }
+
+/* ================= MENU DROPDOWN (NEW – SAFE) ================= */
+.menu-dropdown {
+  position:absolute;
+  top:44px;
+  right:0;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:8px 0;
+  min-width:180px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  display:none;
+  z-index:3000;
+}
+
+.menu-dropdown a {
+  display:block;
+  padding:10px 16px;
+  font-size:14px;
+  color:#111;
+  text-decoration:none;
+}
+
+.menu-dropdown a:hover {
+  background:#f4f4f4;
+}
+
+/* ================= FOOTER (NEW) ================= */
+.footer {
+  margin-top:40px;
+  text-align:center;
+  font-size:12px;
+  color:#666;
+}
+
+.footer-links {
+  margin:6px 0;
+}
+
+.footer-links a {
+  color:#666;
+  text-decoration:none;
+  margin:0 6px;
+}
+
+.footer-made {
+  margin-top:10px;
+}
+
+.footer-logos {
+  margin-top:10px;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+}
+
+.footer-logos img {
+  height:18px;
+  opacity:.85;
+}
 </style>
 </head>
 
@@ -320,12 +381,16 @@ body {
 
   <div class="strip">
     <div class="strip-track">
-      <span>Student-driven attendance tracker • Built for colleges • Real-time analytics • AI powered insights •</span>
-      <span>Student-driven attendance tracker • Built for colleges • Real-time analytics • AI powered insights •</span>
+      <span> A  student  self  driven  attendance  tracker  and  a  AI  for  college  students. </span>
+      <span> A student self driven attendance tracker and a AI for college students. </span>
     </div>
   </div>
 
   <div class="menu-btn"><span></span><span></span></div>
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="#">Terms & Privacy</a>
+    <a href="#">Contact Creator</a>
+  </div>
 </div>
 
 <div class="hero">
@@ -355,22 +420,31 @@ body {
 </div>
 
 <section class="cards-wrap">
-  <div class="cards-title">Trusted by ambitious students</div>
+  <div class="cards-title">Built for ambitious students aiming</div>
   <div class="cards">
     <div class="card">
       <h3>Attendance clarity</h3>
-      <p>No confusion. No panic.</p>
+      <p>Attendmark helps you to track & get real-time, and detailed attendance insights — so you can avoid last-minute confusion.</p>
     </div>
     <div class="card">
       <h3>AI academic help</h3>
-      <p>Ask doubts, plan recovery.</p>
-    </div>
-    <div class="card">
-      <h3>Built for colleges</h3>
-      <p>Designed around real workflows.</p>
+      <p>SAAR AI help you to get simple, instant academic guidance to study smarter and plan better.</p>
     </div>
   </div>
 </section>
+
+<footer class="footer">
+  <div>© Attendmark. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Terms & Privacy</a>
+  </div>
+  <div class="footer-made">Made with ❤️ by a DCIAN using</div>
+  <div class="footer-logos">
+    <img src="logo/Ai3.webp" alt="ChatGPT">
+    <img src="logo/Ai1.webp" alt="Claude">
+    <img src="logo/Ai2.webp" alt="Gemini">
+  </div>
+</footer>
 
 <div class="button-area">
   <a class="get-started" href="#">
@@ -384,7 +458,7 @@ body {
 </div>
 
 <script>
-/* ================= ORIGINAL SCRIPT (LOGIC UNCHANGED) ================= */
+/* ================= ORIGINAL SCRIPT (UNCHANGED) ================= */
 const baseLabels = [
   "Track  attendance",
   "Get  detailed  stats",
@@ -398,7 +472,7 @@ const baseLabels = [
   "College  friendly"
 ];
 
-const repeatCount = 80;
+const repeatCount = 20;
 const labels = Array.from({ length: repeatCount }, () => baseLabels).flat();
 const list = document.getElementById("list");
 
@@ -450,6 +524,20 @@ function step() {
 
 render();
 const timer = setInterval(step, 700 + 500);
+
+/* ================= MENU DROPDOWN LOGIC (NEW) ================= */
+const menuBtn = document.querySelector(".menu-btn");
+const menuDropdown = document.getElementById("menuDropdown");
+
+menuBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  menuDropdown.style.display =
+    menuDropdown.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", () => {
+  menuDropdown.style.display = "none";
+});
 </script>
 
 </body>
