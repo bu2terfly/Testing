@@ -2,403 +2,404 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Attendmark</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class", // We will force this class on the wrapper
+        theme: {
+            extend: {
+                colors: {
+                    primary: "#d97757", 
+                    "background-dark": "#1e1e1e",
+                    "surface-input-dark": "#2a2a2a",
+                },
+                fontFamily: {
+                    display: ["Merriweather", "serif"],
+                    sans: ["Inter", "sans-serif"],
+                },
+                borderRadius: {
+                    'xl': '0.75rem',
+                },
+            },
+        },
+    };
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet"/>
 
 <style>
-/* ================= ORIGINAL VARIABLES (UNCHANGED) ================= */
+/* ================= GLOBAL & LANDING STYLES ================= */
 :root {
-  --purple:#918BFF;
-  --dark:#1F1A1C;
-  --bg:#f5f3ef;
-
-  --btn-bg:#3a3336;
-  --arrow-bg:#8381fc;
-
-  --text:#111;
-  --accent:#8381fc;
-  --item-h:34px;
-  --arrow-w:26px;
-  --arrow-offset:calc(var(--item-h) / 2);
-  --ease:cubic-bezier(0.4,0,0.2,1);
+  --purple: #918BFF;
+  --dark: #1F1A1C;
+  --bg-landing: #f5f3ef;
+  --bg-auth: #1e1e1e; /* Dark theme background */
+  
+  --btn-bg: #3a3336;
+  --arrow-bg: #8381fc;
+  --text: #111;
+  --accent: #8381fc;
+  
+  --item-h: 34px;
+  --arrow-w: 26px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--bg);
-  min-height:100vh;
-  position:relative;
-  overflow-x:hidden;
-  padding:16px;
-  padding-bottom:260px; /* only extended to fit footer */
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-landing);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden; /* Default landing scroll behavior */
+  transition: background-color 0.8s ease; /* Smooth bg transition */
 }
 
-/* ================= HEADER (UNCHANGED) ================= */
-.header { position:relative; }
+/* AUTH MODE ACTIVE STATE (Applied to body via JS) */
+body.auth-active {
+  background: var(--bg-auth);
+  overflow: hidden !important; /* Lock scroll */
+}
+
+/* ================= HEADER (PERSISTENT) ================= */
+.header-container {
+    position: relative;
+    z-index: 2000;
+    padding: 16px 16px 0 16px;
+    transition: all 0.5s ease;
+}
 
 .title {
-  font-size:33px;
-  font-weight:750;
-  line-height:1.05;
-  color:var(--btn-bg);
+  font-size: 33px;
+  font-weight: 750;
+  line-height: 1.05;
+  color: var(--btn-bg);
+  transition: color 0.5s ease;
+}
+
+/* Change title color in Auth Mode */
+body.auth-active .title {
+  color: #ffffff;
 }
 
 .with {
-  position:absolute;
-  top:20px;
-  left:20px;
-  font-family:'Caveat',cursive;
-  font-size:28px;
-  transform:rotate(-15deg);
-  color:#918BFF;
+  position: absolute;
+  top: 20px;
+  left: 36px; /* Adjusted slightly */
+  font-family: 'Caveat', cursive;
+  font-size: 28px;
+  transform: rotate(-15deg);
+  color: #918BFF;
 }
 
 .subtitle {
-  margin-top:6px;
-  font-size:8px;
-  color:#444;
-  text-transform:uppercase;
-  letter-spacing:.12em;
+  margin-top: 6px;
+  font-size: 8px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  transition: color 0.5s ease;
 }
 
-/* ================= STRIP (UNCHANGED) ================= */
+body.auth-active .subtitle {
+  color: #888;
+}
+
+/* ================= STRIP (PERSISTENT) ================= */
 .strip {
-  margin-top:25px;
-  margin-left:-16px;
-  margin-right:-16px;
-  padding:8px 0;
-  background:#f8e6d8;
-  border-top:1px solid #f0c7a8;
-  border-bottom:1px solid #f0c7a8;
-  overflow:hidden;
+  margin-top: 25px;
+  width: 100%;
+  padding: 8px 0;
+  background: #f8e6d8;
+  border-top: 1px solid #f0c7a8;
+  border-bottom: 1px solid #f0c7a8;
+  overflow: hidden;
+  position: relative;
+  z-index: 2000;
 }
 
 .strip-track {
-  display:flex;
-  width:max-content;
-  animation:stripMove 22s linear infinite;
-  font-size:11px;
+  display: flex;
+  width: max-content;
+  animation: stripMove 22s linear infinite;
+  font-size: 11px;
   word-spacing: 0.4em;
-  font-weight:600;
-  letter-spacing:.14em;
-  text-transform:uppercase;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #111; /* Ensure text stays dark in strip */
 }
 
 .strip-track span {
-  padding:0 24px;
-  white-space:nowrap;
+  padding: 0 24px;
+  white-space: nowrap;
 }
 
 @keyframes stripMove {
-  from { transform:translateX(0); }
-  to { transform:translateX(-50%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
-/* ================= MENU BUTTON (UNCHANGED) ================= */
+/* ================= MENU BUTTON ================= */
 .menu-btn {
-  position:absolute;
-  top:20px;
-  right:0;
-  width:32px;
-  height:12px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  cursor:pointer;
-  z-index:3000;
-}
-.menu-btn span {
-  height:3px;
-  background:#353839;
-  border-radius:2.5px;
+  position: absolute;
+  top: 36px;
+  right: 16px;
+  width: 32px;
+  height: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 3000;
 }
 
-/* ================= HERO (UNCHANGED) ================= */
+.menu-btn span {
+  height: 3px;
+  background: #353839;
+  border-radius: 2.5px;
+  transition: background 0.5s ease;
+}
+
+/* White menu lines in Auth Mode */
+body.auth-active .menu-btn span {
+  background: #ffffff;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  padding: 3px 0;
+  box-shadow: 0 12px 32px rgba(0,0,0,.12);
+  display: none;
+  z-index: 3000;
+}
+.menu-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #111;
+  text-decoration: none;
+  border-bottom: 1px solid #ededed;
+}
+.menu-dropdown a:last-child { border-bottom: none; }
+.menu-dropdown a:hover { background: #f6f6f6; }
+
+/* ================= VIEW TRANSITIONS ================= */
+#landing-view {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    padding: 0 16px 260px 16px; /* Original padding */
+}
+
+#landing-view.hidden-view {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    position: absolute; /* Remove from flow */
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#auth-wrapper {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 150px; /* Adjust based on header height + strip */
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 150px);
+    transition: opacity 0.8s ease 0.2s; /* Slight delay */
+    z-index: 100;
+    overflow-y: auto; /* Allow internal scrolling if strictly needed on small screens, though designs say no scroll */
+}
+
+#auth-wrapper.active-view {
+    opacity: 1;
+    visibility: visible;
+    position: relative; /* Put back in flow */
+}
+
+/* ================= HERO & LANDING SPECIFICS ================= */
 .hero {
-  display:flex;
-  margin-top:30px;
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  margin-top: 30px;
+  justify-content: center;
+  align-items: center;
 }
 .illustration {
-  margin-left:-16px;
-  margin-right:-16px;
-  max-height:36vh;
-  width:100%;
-  display:flex;
-  justify-content:center;
+  margin-left: -16px;
+  margin-right: -16px;
+  max-height: 36vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .illustration img {
-  width:100%;
-  object-fit:contain;
+  width: 100%;
+  object-fit: contain;
 }
 
-/* ================= TEXT ANIMATION (UNCHANGED) ================= */
+/* Text Anim */
 .text-anim {
-  position:relative;
-  height:calc(var(--item-h) * 3);
-  margin-top:12px;
-  overflow-y:hidden;
-  overflow-x:visible;
+  position: relative;
+  height: calc(var(--item-h) * 3);
+  margin-top: 12px;
+  overflow-y: hidden;
+  overflow-x: visible;
 }
-
-.fixed-arrow {
-  position:absolute;
-  top:50%;
-  width:var(--arrow-w);
-  height:var(--arrow-w);
-  transform:translateY(-50%);
-  pointer-events:none;
-}
-
-.fixed-arrow svg {
-  width:100%;
-  height:100%;
-  fill:none;
-  stroke:var(--accent);
-  stroke-width:2.5;
-}
-
-.fixed-arrow.left { left:0px; }
-.fixed-arrow.right {
-  right:0px;
-  transform:translateY(-50%) rotate(180deg);
-}
-
 .viewport {
-  height:100%;
-  overflow-y:hidden;
-  overflow-x:visible;
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: visible;
 }
-
 .list-center {
-  position:relative;
-  left:50%;
-  transform:translateX(-50%);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
 .list {
-  position:absolute;
-  left:0;
-  right:0;
+  position: absolute;
+  left: 0;
+  right: 0;
 }
-
 .item {
-  position:relative;
-  height:var(--item-h);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position: relative;
+  height: var(--item-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Inter', sans-serif;
-  font-size:1.2rem;
+  font-size: 1.2rem;
   word-spacing: 0.1em;
-  font-weight:600;
-  white-space:nowrap;
-  color:var(--text);
-  opacity:0.25;
-  transition:
-    transform .45s var(--ease),
-    opacity .45s var(--ease),
-    color .45s var(--ease),
-    font-size .45s var(--ease);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: 0.25;
+  transition: transform .45s var(--ease), opacity .45s var(--ease), color .45s var(--ease), font-size .45s var(--ease);
 }
-
-.item.near { opacity:0.55; }
-
-.item.active {
-  opacity:1;
-  color:var(--accent);
-  font-weight:700;
-  font-size:1.75rem;
+.item.active { opacity: 1; color: var(--accent); font-weight: 700; font-size: 1.75rem; }
+.item.near { opacity: 0.55; }
+.fixed-arrow {
+  position: absolute;
+  top: 50%;
+  width: var(--arrow-w);
+  height: var(--arrow-w);
+  transform: translateY(-50%);
+  pointer-events: none;
 }
+.fixed-arrow svg { width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.fixed-arrow.left { left: 0px; }
+.fixed-arrow.right { right: 0px; transform: translateY(-50%) rotate(180deg); }
 
-/* ================= CARDS (UNCHANGED) ================= */
+/* Cards */
 .cards-wrap {
-  margin-top:40px;
-  padding:22px;
-  background:#efeee9;
-  border:1px solid #d8d6cf;
-  border-radius:26px;
+  margin-top: 40px;
+  padding: 22px;
+  background: #efeee9;
+  border: 1px solid #d8d6cf;
+  border-radius: 26px;
 }
+.cards-title { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 25px; margin-top: -8px; }
+.cards { display: grid; gap: 14px; }
+.card { background: #fff; border-radius: 18px; padding: 18px; border: 1px solid #e3e2dd; }
+.card h3 { font-size: 16px; margin-bottom: 6px; }
+.card p { font-size: 13px; color: #666; line-height: 1.5; }
 
-.cards-title {
-  text-align:center;
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:25px;
-  margin-top:-8px;
-}
-
-.cards {
-  display:grid;
-  gap:14px;
-}
-
-.card {
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  border:1px solid #e3e2dd;
-}
-
-.card h3 {
-  font-size:16px;
-  margin-bottom:6px;
-}
-
-.card p {
-  font-size:13px;
-  color:#666;
-  line-height:1.5;
-}
-
-/* ================= GET STARTED BUTTON (UNCHANGED) ================= */
+/* Get Started Button (Landing Only) */
 .button-area {
-  position:fixed;
-  bottom:16px;
-  left:0;
-  right:0;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  padding:0 32px;
-  z-index:1000;
+  position: fixed;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 32px;
+  z-index: 1000;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.button-area.hide-btn {
+    transform: translateY(100px);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .get-started {
-  margin:0 70px;
-  position:relative;
-  display:flex;
-  align-items:center;
-  height:60px;
-  padding-left:24px;
-  padding-right:118px;
-  background:var(--btn-bg);
-  color:#fff;
-  font-size:22px;
-  font-weight:600;
-  border-radius:999px;
-  text-decoration:none;
-  box-shadow:0 6px 18px rgba(0,0,0,.25);
+  margin: 0 70px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding-left: 24px;
+  padding-right: 118px;
+  background: var(--btn-bg);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  cursor: pointer;
 }
-
 .get-started .arrow-btn {
-  position:absolute;
-  top:0;
-  right:0;
-  width:60px;
-  height:60px;
-  background:var(--arrow-bg);
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--arrow-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.get-started svg { width: 40px; height: 40px; stroke: #fff; stroke-width: 1.6; fill: none; }
+
+/* Footer */
+.footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; padding-bottom: 20px;}
+.footer-logos { margin-top: 10px; display: flex; justify-content: center; gap: 14px; }
+.footer-logos img { height: 18px; opacity: .85; }
+
+/* ================= AUTH / LOGIN CUSTOM CSS ================= */
+.custom-input {
+    transition: all 0.2s ease-in-out;
+    border: none;
+    outline: none;
+}
+.toast-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.get-started svg {
-  width:40px;
-  height:40px;
-  stroke:#fff;
-  stroke-width:1.6;
-  fill:none;
-}
-
-/* ================= MENU DROPDOWN – COMPACT ================= */
-.menu-dropdown {
-  position:absolute;
-  top:44px;
-  right:0;
-  min-width:180px;
-
-  background:#fff;
-  border:1px solid #e3e3e3;
-  border-radius:12px;
-
-  padding:3px 0;
-  box-shadow:0 12px 32px rgba(0,0,0,.12);
-
-  display:none;
-  z-index:3000;
-}
-
-.menu-dropdown a {
-  display:block;
-
-  padding:8px 16px; /* reduced vertical padding */
-  font-size:14px;
-  line-height:1.4;
-
-  color:#111;
-  text-decoration:none;
-  white-space:nowrap;
-}
-
-.menu-dropdown a:not(:last-child) {
-  border-bottom:1px solid #ededed;
-}
-
-.menu-dropdown a:hover {
-  background:#f6f6f6;
-}
-
-/* ================= FOOTER (NEW) ================= */
-.footer {
-  margin-top:40px;
-  text-align:center;
-  font-size:12px;
-  color:#666;
-}
-
-.footer-links {
-  margin:6px 0;
-}
-
-.footer-links a {
-  color:#666;
-  text-decoration:none;
-  margin:0 6px;
-}
-
-.footer-made {
-  margin-top:16px;
-  font-size:15px;
-  font-weight: 400;
-}
-
-.footer-logos {
-  margin-top:10px;
-  display:flex;
-  justify-content:center;
-  gap:14px;
-}
-
-.footer-logos img {
-  height:18px;
-  opacity:.85;
-}
+/* Tailwind Overrides for Specificity */
+.dark .text-gray-100 { color: #f3f4f6; }
 </style>
 </head>
 
-<body>
+<body class="selection:bg-primary selection:text-white">
 
-<div class="header">
+<div class="header-container">
   <div class="title">Attendmark</div>
   <div class="title">Saar AI</div>
   <div class="with">with</div>
   <div class="subtitle">student academic & attendance responder</div>
-
-  <div class="strip">
-    <div class="strip-track">
-      <span> A  student  self  driven  attendance  tracker  and  a  AI  for  college  students. </span>
-      <span> A student self driven attendance tracker and a AI for college students. </span>
-    </div>
-  </div>
-
+  
   <div class="menu-btn"><span></span><span></span></div>
   <div class="menu-dropdown" id="menuDropdown">
     <a href="#">Terms & Privacy</a>
@@ -406,85 +407,231 @@ body {
   </div>
 </div>
 
-<div class="hero">
-  <div class="illustration">
-    <img src="30719.png" alt="">
-  </div>
+<div class="strip">
+    <div class="strip-track">
+      <span> A  student  self  driven  attendance  tracker  and  a  AI  for  college  students. </span>
+      <span> A student self driven attendance tracker and a AI for college students. </span>
+    </div>
 </div>
 
-<div class="text-anim">
-  <div class="fixed-arrow left">
-    <svg viewBox="0 0 24 24">
-      <path d="M5 12h14M13 5l6 7-6 7"/>
-    </svg>
-  </div>
-
-  <div class="viewport">
-    <div class="list-center">
-      <div class="list" id="list"></div>
+<div id="landing-view">
+    <div class="hero">
+      <div class="illustration">
+        <img src="30719.png" alt="Illustration">
+      </div>
     </div>
-  </div>
 
-  <div class="fixed-arrow right">
-    <svg viewBox="0 0 24 24">
-      <path d="M5 12h14M13 5l6 7-6 7"/>
-    </svg>
-  </div>
+    <div class="text-anim">
+      <div class="fixed-arrow left">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l6 7-6 7"/></svg>
+      </div>
+      <div class="viewport">
+        <div class="list-center">
+          <div class="list" id="list"></div>
+        </div>
+      </div>
+      <div class="fixed-arrow right">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l6 7-6 7"/></svg>
+      </div>
+    </div>
+
+    <section class="cards-wrap">
+      <div class="cards-title">Built for ambitious students aiming</div>
+      <div class="cards">
+        <div class="card">
+          <h3>Attendance clarity</h3>
+          <p>Attendmark helps you to track & get real-time, and detailed attendance insights — so you can avoid last-minute confusion.</p>
+        </div>
+        <div class="card">
+          <h3>AI academic help</h3>
+          <p>SAAR AI help you to get simple, instant academic guidance to study smarter and plan better.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>© Attendmark. All rights reserved.</div>
+      <div class="footer-links" style="margin:6px 0;">
+        <a href="#" style="color:#666; text-decoration:none;">Terms & Privacy</a>
+      </div>
+      <div class="footer-made" style="margin-top:16px;">Made with ❤️ by a DCIAN<br> entirely using</div>
+      <div class="footer-logos">
+        <img src="logo/Ai3.webp" alt="ChatGPT">
+        <img src="logo/Ai1.webp" alt="Claude">
+        <img src="logo/Ai2.webp" alt="Gemini">
+      </div>
+    </footer>
 </div>
 
-<section class="cards-wrap">
-  <div class="cards-title">Built for ambitious students aiming</div>
-  <div class="cards">
-    <div class="card">
-      <h3>Attendance clarity</h3>
-      <p>Attendmark helps you to track & get real-time, and detailed attendance insights — so you can avoid last-minute confusion.</p>
-    </div>
-    <div class="card">
-      <h3>AI academic help</h3>
-      <p>SAAR AI help you to get simple, instant academic guidance to study smarter and plan better.</p>
-    </div>
-  </div>
-</section>
-
-<footer class="footer">
-  <div>© Attendmark. All rights reserved.</div>
-  <div class="footer-links">
-    <a href="#">Terms & Privacy</a>
-  </div>
-  <div class="footer-made">Made with ❤️ by a DCIAN<br> entirely using</div>
-  <div class="footer-logos">
-    <img src="logo/Ai3.webp" alt="ChatGPT">
-    <img src="logo/Ai1.webp" alt="Claude">
-    <img src="logo/Ai2.webp" alt="Gemini">
-  </div>
-</footer>
-
-<div class="button-area">
-  <a class="get-started" href="#">
+<div class="button-area" id="getStartedBtnArea">
+  <div class="get-started" onclick="transitionToAuth()">
     Get&nbsp;Started
     <div class="arrow-btn">
-      <svg viewBox="0 0 24 24">
-        <path d="M7 17L17 7M9 7h8v8"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>
     </div>
-  </a>
+  </div>
+</div>
+
+<div id="auth-wrapper" class="dark">
+    
+    <div id="view-login" class="h-full flex flex-col items-center justify-start pt-8 px-6 transition-all duration-300">
+        
+        <div class="w-full flex-1 flex flex-col items-center max-w-sm">
+            
+            <h1 class="font-display text-4xl text-center leading-tight mb-8 text-gray-100">
+                welcome<br/>mates
+            </h1>
+
+            <div class="w-full space-y-3 mb-8 relative">
+                
+                <button class="w-full bg-[#2a2a2a] hover:bg-[#333333] text-white rounded-xl py-3.5 font-medium text-[16px] flex items-center justify-center gap-3 transition-all shadow-sm group border border-transparent">
+                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <div class="flex items-center w-full gap-4 py-1">
+                    <div class="h-px bg-gray-700 flex-1"></div>
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">or</span>
+                    <div class="h-px bg-gray-700 flex-1"></div>
+                </div>
+
+                <div class="relative group">
+                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 pl-5 pr-14 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[16px]" 
+                           id="emailInput" oninput="toggleArrow()" placeholder="email@example.com" type="email"/>
+                    
+                    <button class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer z-10" 
+                            id="emailArrowBtn" onclick="checkEmailAndProceed()">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="hidden relative group fade-in" id="passwordContainer">
+                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 pl-5 pr-5 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[16px]" 
+                           placeholder="Password" type="password"/>
+                </div>
+
+                <button class="hidden fade-in w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/25" 
+                        id="continueBtn">
+                    Continue
+                </button>
+            </div>
+
+            <div class="text-center text-xs text-gray-500 leading-relaxed px-4">
+                By continuing, you agree to our 
+                <a class="underline hover:text-primary" href="#">Terms</a> and <a class="underline hover:text-primary" href="#">Privacy Policy</a>.
+            </div>
+        </div>
+
+        <div class="pb-6 mt-auto">
+            <span class="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Anthropic</span>
+        </div>
+    </div>
+
+    <div id="view-registration" class="hidden h-full flex flex-col relative px-6 pt-4 fade-in">
+        
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="goBackToLogin()" class="group flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors">
+                <svg class="w-6 h-6 text-primary group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <span class="font-display font-bold text-lg tracking-tight text-gray-100">Create Profile</span>
+            <div class="w-10"></div> 
+        </div>
+
+        <main class="flex-1 flex flex-col justify-start w-full max-w-sm mx-auto">
+            
+            <div class="mb-6 text-center">
+                <h2 class="font-display text-2xl font-bold text-primary mb-1">Finish Setup</h2>
+                <p class="text-sm text-gray-500">Please complete your details below.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                
+                <div class="col-span-2">
+                    <div class="relative flex items-center bg-surface-input-dark/50 rounded-xl px-4 py-3.5 border border-dashed border-gray-700">
+                        <input id="regEmailInput" class="w-full bg-transparent border-none p-0 text-gray-500 text-[15px] font-medium focus:ring-0" disabled readonly value=""/>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                </div>
+
+                <div class="col-span-2">
+                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[15px]" 
+                           placeholder="Full Name" type="text"/>
+                </div>
+
+                <div class="col-span-1 relative">
+                    <select class="custom-input w-full bg-surface-input-dark rounded-xl py-3.5 pl-4 pr-8 text-[15px] text-gray-100 focus:ring-2 focus:ring-primary/50 cursor-pointer">
+                        <option value="" disabled selected class="text-gray-500">College</option>
+                        <option value="eng">Engineering</option>
+                        <option value="med">Medical</option>
+                        <option value="art">Arts</option>
+                    </select>
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+
+                <div class="col-span-1 relative">
+                    <select class="custom-input w-full bg-surface-input-dark rounded-xl py-3.5 pl-4 pr-8 text-[15px] text-gray-100 focus:ring-2 focus:ring-primary/50 cursor-pointer">
+                        <option value="" disabled selected>Class</option>
+                        <option value="cse">CSE</option>
+                        <option value="ece">ECE</option>
+                    </select>
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+
+                <div class="col-span-1 relative">
+                    <select class="custom-input w-full bg-surface-input-dark rounded-xl py-3.5 pl-4 pr-8 text-[15px] text-gray-100 focus:ring-2 focus:ring-primary/50 cursor-pointer">
+                        <option value="" disabled selected>Section</option>
+                        <option value="a">A</option>
+                        <option value="b">B</option>
+                    </select>
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+
+                <div class="col-span-1">
+                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[15px]" 
+                           placeholder="Roll No." type="tel"/>
+                </div>
+
+                <div class="col-span-2 relative">
+                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[15px]" 
+                           placeholder="Create Password" type="password"/>
+                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button class="w-full bg-primary text-white rounded-xl py-4 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                    <span>Complete Registration</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </button>
+            </div>
+        </main>
+    </div>
 </div>
 
 <script>
-/* ================= ORIGINAL SCRIPT (UNCHANGED) ================= */
+/* ================= TEXT ANIMATION (LANDING) ================= */
 const baseLabels = [
-  "Track  attendance",
-  "Get  detailed  stats",
-  "Subjects  analytics",
-  "Plan  safebunks",
-  "Tips  &  roadmap",
-  "Ask  doubts  to  AI",
-  "Log  short  notes",
-  "Realtime  counts",
-  "View  edit  anytime",
-  "College  friendly"
+  "Track  attendance", "Get  detailed  stats", "Subjects  analytics",
+  "Plan  safebunks", "Tips  &  roadmap", "Ask  doubts  to  AI",
+  "Log  short  notes", "Realtime  counts", "View  edit  anytime", "College  friendly"
 ];
-
 const repeatCount = 20;
 const labels = Array.from({ length: repeatCount }, () => baseLabels).flat();
 const list = document.getElementById("list");
@@ -502,18 +649,13 @@ const ACTIVE_ROW_INDEX = 1;
 let index = ACTIVE_ROW_INDEX;
 
 function getItemHeight() {
-  return parseInt(getComputedStyle(document.documentElement)
-    .getPropertyValue("--item-h"));
+  return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--item-h"));
 }
-
-const lastSafeIndex =
-  labels.length - 1 - (VISIBLE_ROWS - 1 - ACTIVE_ROW_INDEX);
+const lastSafeIndex = labels.length - 1 - (VISIBLE_ROWS - 1 - ACTIVE_ROW_INDEX);
 
 function render() {
   const h = getItemHeight();
-  list.style.transform =
-    `translateY(${-(index - ACTIVE_ROW_INDEX) * h}px)`;
-
+  list.style.transform = `translateY(${-(index - ACTIVE_ROW_INDEX) * h}px)`;
   items.forEach((el, i) => {
     el.classList.remove("active", "near", "idle");
     const d = Math.abs(i - index);
@@ -521,7 +663,6 @@ function render() {
     else if (d === 1) el.classList.add("near");
   });
 }
-
 function step() {
   if (index >= lastSafeIndex) {
     clearInterval(timer);
@@ -530,27 +671,94 @@ function step() {
     return;
   }
   index++;
-  list.style.transition =
-    `transform 500ms cubic-bezier(0.4,0,0.2,1)`;
+  list.style.transition = `transform 500ms cubic-bezier(0.4,0,0.2,1)`;
   render();
 }
-
 render();
-const timer = setInterval(step, 700 + 500);
+const timer = setInterval(step, 1200);
 
-/* ================= MENU DROPDOWN LOGIC (NEW) ================= */
+/* ================= MENU DROPDOWN LOGIC ================= */
 const menuBtn = document.querySelector(".menu-btn");
 const menuDropdown = document.getElementById("menuDropdown");
 
 menuBtn.addEventListener("click", e => {
   e.stopPropagation();
-  menuDropdown.style.display =
-    menuDropdown.style.display === "block" ? "none" : "block";
+  menuDropdown.style.display = menuDropdown.style.display === "block" ? "none" : "block";
 });
-
 document.addEventListener("click", () => {
   menuDropdown.style.display = "none";
 });
+
+/* ================= PAGE TRANSITION LOGIC ================= */
+function transitionToAuth() {
+    // 1. Hide Button
+    document.getElementById('getStartedBtnArea').classList.add('hide-btn');
+    
+    // 2. Fade out Landing
+    const landing = document.getElementById('landing-view');
+    landing.classList.add('hidden-view');
+    
+    // 3. Change Body Theme (Background & Scroll Lock)
+    document.body.classList.add('auth-active');
+    
+    // 4. Fade in Auth view (after short delay for smoothness)
+    setTimeout(() => {
+        document.getElementById('landing-view').style.display = 'none'; // fully remove from flow
+        document.getElementById('auth-wrapper').classList.add('active-view');
+    }, 600);
+}
+
+/* ================= AUTH FORM LOGIC ================= */
+function toggleArrow() {
+    const emailInput = document.getElementById('emailInput');
+    const arrowBtn = document.getElementById('emailArrowBtn');
+    const passwordContainer = document.getElementById('passwordContainer');
+
+    if (emailInput.value.length > 0 && passwordContainer.classList.contains('hidden')) {
+        arrowBtn.classList.remove('hidden');
+    } else {
+        arrowBtn.classList.add('hidden');
+    }
+}
+
+function checkEmailAndProceed() {
+    const emailInput = document.getElementById('emailInput');
+    const emailValue = emailInput.value.trim();
+    const loginView = document.getElementById('view-login');
+    const regView = document.getElementById('view-registration');
+    
+    // DEMO LOGIC: If email is "pacman@gmail.com", go to Registration
+    if (emailValue.toLowerCase() === 'pacman@gmail.com') {
+        document.getElementById('regEmailInput').value = emailValue;
+        loginView.style.display = 'none';
+        regView.classList.remove('hidden');
+        regView.style.display = 'flex';
+        return;
+    }
+
+    // ELSE: Show Password
+    const arrowBtn = document.getElementById('emailArrowBtn');
+    const passwordContainer = document.getElementById('passwordContainer');
+    const continueBtn = document.getElementById('continueBtn');
+
+    arrowBtn.classList.add('hidden');
+    passwordContainer.classList.remove('hidden');
+    continueBtn.classList.remove('hidden');
+    passwordContainer.querySelector('input').focus();
+}
+
+function goBackToLogin() {
+    const loginView = document.getElementById('view-login');
+    const regView = document.getElementById('view-registration');
+
+    regView.style.display = 'none';
+    regView.classList.add('hidden');
+    loginView.style.display = 'flex';
+    
+    document.getElementById('emailInput').value = '';
+    document.getElementById('passwordContainer').classList.add('hidden');
+    document.getElementById('continueBtn').classList.add('hidden');
+}
 </script>
 
 </body>
