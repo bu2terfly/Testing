@@ -62,7 +62,6 @@ body {
 
 body.auth-active {
   background: var(--bg-auth);
-  /* Allow scrolling in auth mode */
   overflow-y: auto !important; 
   overflow-x: hidden;
 }
@@ -173,7 +172,6 @@ body.auth-active .menu-btn span {
 .menu-dropdown {
   position: absolute;
   top: 60px;
-  /* REQUEST 1: 15px gap from screen edge */
   right: 15px; 
   min-width: 180px;
   background: #fff;
@@ -220,7 +218,6 @@ body.auth-active .menu-btn span {
     top: 42px; 
     left: 0;
     width: 100%;
-    /* REQUEST 8: Allow scrolling */
     height: calc(100vh - 42px);
     overflow-y: auto;
     padding-bottom: 40px;
@@ -269,27 +266,15 @@ body.auth-active .menu-btn span {
 .footer-logos img { height: 18px; opacity: .85; }
 
 /* ================= AUTH CUSTOM CSS ================= */
-.custom-input { transition: all 0.2s ease-in-out; border: none; outline: none; }
+.custom-input { transition: all 0.2s ease-in-out; outline: none; }
 .fade-in { animation: fadeIn 0.4s ease-out forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .dark .text-gray-100 { color: #f3f4f6; }
 
-/* REQUEST 3: Spacing for specific placeholders */
 .placeholder-tracking::placeholder {
     letter-spacing: 0.1em;
 }
 
-/* --- DATE INPUT FIX --- */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1) opacity(0.5);
-    cursor: pointer;
-}
-input[type="date"]:invalid::-webkit-datetime-edit {
-    color: transparent;
-}
-input[type="date"]:invalid::before {
-    content: attr(placeholder);
-    color: #6b7280; 
 }
 </style>
 </head>
@@ -374,15 +359,20 @@ input[type="date"]:invalid::before {
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
 
-                    <button class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer z-10" 
+                    <button class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer z-10" 
                             id="emailArrowBtn" onclick="checkEmailAndProceed()">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                     </button>
                 </div>
 
                 <div class="hidden relative group fade-in" id="passwordContainer">
-                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 pl-5 pr-5 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[16px]" 
+                    <input id="loginPassword" class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 pl-5 pr-10 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[16px]" 
                            placeholder="Password" type="password"/>
+                    
+                    <button type="button" onclick="togglePasswordVisibility('loginPassword')" class="absolute right-3 top-4 text-gray-500 hover:text-primary transition-colors cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>
+
                     <div class="text-right mt-2 mr-1">
                         <span onclick="switchToForgot()" class="text-[12px] text-primary hover:text-white cursor-pointer transition-colors font-medium">Forgot Password?</span>
                     </div>
@@ -440,16 +430,17 @@ input[type="date"]:invalid::before {
 
     <div id="view-registration" class="hidden min-h-full flex flex-col relative px-6 pt-0 fade-in">
         
-        <div class="w-full flex flex-col justify-start mb-6 mt-2 fade-in">
-            <div class="flex items-center gap-4 mb-3">
-                <button onclick="backToLogin('view-registration')" class="group flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors -ml-2">
+        <div class="w-full mb-6 mt-2 fade-in">
+            <div class="relative w-full flex items-center justify-center mb-3 min-h-[40px]">
+                <button onclick="backToLogin('view-registration')" class="absolute left-0 top-1/2 -translate-y-1/2 group flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors -ml-2 z-10">
                     <svg class="w-6 h-6 text-gray-400 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                <span class="text-peach text-[15px] font-medium">Email not registered</span>
+                <span class="text-peach text-[15px] font-medium text-center">Email not registered</span>
             </div>
-            <h1 class="font-display text-3xl font-bold tracking-tight text-white leading-tight">Create an account</h1>
+            
+            <h1 class="font-display text-3xl font-bold tracking-tight text-white leading-tight text-center">Create an account</h1>
         </div>
 
         <main class="flex-1 flex flex-col justify-start w-full max-w-sm mx-auto">
@@ -460,18 +451,13 @@ input[type="date"]:invalid::before {
                 <div class="col-span-2">
                     <div class="relative flex items-center bg-surface-input-dark/50 rounded-xl px-4 py-2.5 border border-dashed border-gray-700">
                         <input id="regEmailInput" class="w-full bg-transparent border-none p-0 text-gray-500 text-sm font-medium focus:ring-0" disabled readonly value=""/>
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+               class="col-span-2">         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     </div>
                 </div>
                 <div class="col-span-2">
                     <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-2.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-sm" placeholder="Full Name" type="text"/>
                 </div>
                 
-                <div class="col-span-2">
-                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-primary/50 text-sm" 
-                           placeholder="Date of Birth" 
-                           type="date"
-                           required />
                 </div>
 
                 <div class="col-span-1 relative">
