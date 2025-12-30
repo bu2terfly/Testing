@@ -15,6 +15,7 @@
                     primary: "#918BFF", 
                     "background-dark": "#1e1e1e",
                     "surface-input-dark": "#2a2a2a",
+                    "peach": "#FFCBA4",
                 },
                 fontFamily: {
                     display: ["Plus Jakarta Sans", "sans-serif"],
@@ -61,7 +62,9 @@ body {
 
 body.auth-active {
   background: var(--bg-auth);
-  overflow: hidden !important;
+  /* Allow scrolling in auth mode */
+  overflow-y: auto !important; 
+  overflow-x: hidden;
 }
 
 /* ================= HEADER ================= */
@@ -170,7 +173,8 @@ body.auth-active .menu-btn span {
 .menu-dropdown {
   position: absolute;
   top: 60px;
-  right: 0; 
+  /* REQUEST 1: 15px gap from screen edge */
+  right: 15px; 
   min-width: 180px;
   background: #fff;
   border: 1px solid #e3e3e3;
@@ -216,10 +220,12 @@ body.auth-active .menu-btn span {
     top: 42px; 
     left: 0;
     width: 100%;
-    height: calc(100vh - 105px);
+    /* REQUEST 8: Allow scrolling */
+    height: calc(100vh - 42px);
+    overflow-y: auto;
+    padding-bottom: 40px;
     transition: opacity 0.8s ease 0.2s;
     z-index: 100;
-    overflow-y: hidden;
 }
 
 #auth-wrapper.active-view {
@@ -268,20 +274,22 @@ body.auth-active .menu-btn span {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .dark .text-gray-100 { color: #f3f4f6; }
 
-/* --- ONE-CLICK DATE INPUT FIX --- */
-/* Inverts calendar icon to be white/visible */
+/* REQUEST 3: Spacing for specific placeholders */
+.placeholder-tracking::placeholder {
+    letter-spacing: 0.1em;
+}
+
+/* --- DATE INPUT FIX --- */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1) opacity(0.5);
     cursor: pointer;
 }
-/* Hides the default 'dd/mm/yyyy' text when empty (required) */
 input[type="date"]:invalid::-webkit-datetime-edit {
     color: transparent;
 }
-/* Shows the 'placeholder' text using ::before when empty */
 input[type="date"]:invalid::before {
     content: attr(placeholder);
-    color: #6b7280; /* Matches gray-500 */
+    color: #6b7280; 
 }
 </style>
 </head>
@@ -339,7 +347,7 @@ input[type="date"]:invalid::before {
 
 <div id="auth-wrapper" class="dark">
     
-    <div id="view-login" class="h-full flex flex-col items-center justify-start pt-0 px-6 transition-all duration-300">
+    <div id="view-login" class="min-h-full flex flex-col items-center justify-start pt-0 px-6 transition-all duration-300">
         <div class="w-full flex-1 flex flex-col items-center max-w-sm">
             <div class="text-center mb-6 mt-2">
                 <h1 class="font-display text-3xl font-extrabold tracking-tight text-gray-100">Welcome mates</h1>
@@ -347,7 +355,7 @@ input[type="date"]:invalid::before {
             </div>
 
             <div class="w-full space-y-3 mb-4 relative">
-                <button class="w-full bg-[#2a2a2a] hover:bg-[#333333] text-white rounded-xl py-3.5 font-medium text-[16px] flex items-center justify-center gap-3 transition-all shadow-sm group border border-transparent">
+                <button class="w-full bg-white hover:bg-gray-200 text-black rounded-xl py-3.5 font-bold text-[16px] flex items-center justify-center gap-3 transition-all group">
                     <svg class="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg>
                     Continue with Google
                 </button>
@@ -359,8 +367,13 @@ input[type="date"]:invalid::before {
                 </div>
 
                 <div class="relative group">
-                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-3.5 pl-5 pr-14 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-[16px]" 
+                    <input class="custom-input w-full bg-surface-input-dark border border-white text-gray-100 rounded-xl py-3.5 pl-5 pr-14 placeholder-gray-500 placeholder-tracking focus:ring-2 focus:ring-primary/50 text-[16px]" 
                            id="emailInput" oninput="toggleArrow()" placeholder="Enter your gmail" type="email"/>
+                    
+                    <div id="emailIconStatic" class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+
                     <button class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer z-10" 
                             id="emailArrowBtn" onclick="checkEmailAndProceed()">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -375,15 +388,15 @@ input[type="date"]:invalid::before {
                     </div>
                 </div>
 
-                <button class="hidden fade-in w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/25" 
+                <button class="hidden fade-in w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all" 
                         id="continueBtn">Continue</button>
             </div>
-            <div class="text-center text-xs text-gray-500 leading-relaxed px-4">By continuing, you agree to our <a class="underline hover:text-primary" href="#">Terms</a> and <a class="underline hover:text-primary" href="#">Privacy Policy</a>.</div>
+            <div class="text-center text-xs text-gray-500 leading-relaxed px-4 pb-4">By continuing, you agree to our <a class="underline hover:text-primary" href="#">Terms</a> and <a class="underline hover:text-primary" href="#">Privacy Policy</a>.</div>
         </div>
         <div class="pb-6 mt-auto"><span class="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Anthropic</span></div>
     </div>
 
-    <div id="view-forgot" class="hidden h-full flex flex-col items-center justify-start pt-0 px-6 fade-in">
+    <div id="view-forgot" class="hidden min-h-full flex flex-col items-center justify-start pt-0 px-6 fade-in">
         <div class="w-full flex-1 flex flex-col items-center max-w-sm">
              
              <div class="relative w-full flex items-center justify-center mb-8 mt-2">
@@ -407,7 +420,7 @@ input[type="date"]:invalid::before {
                         <p class="text-[13px] text-primary font-semibold">A password reset link will be sent to this email address.</p>
                     </div>
                     
-                    <button onclick="sendResetLink()" class="w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/25">
+                    <button onclick="sendResetLink()" class="w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all">
                         Send Link
                     </button>
                 </div>
@@ -425,25 +438,18 @@ input[type="date"]:invalid::before {
         </div>
     </div>
 
-    <div id="view-registration" class="hidden h-full flex flex-col relative px-6 pt-0 fade-in">
+    <div id="view-registration" class="hidden min-h-full flex flex-col relative px-6 pt-0 fade-in">
         
-        <div class="w-full flex justify-center mb-4 mt-1 fade-in">
-            <div class="bg-primary/10 border border-primary/20 rounded-full py-1.5 px-6">
-                <span class="text-primary text-[10px] font-bold tracking-widest uppercase opacity-90">No account found for this email</span>
+        <div class="w-full flex flex-col justify-start mb-6 mt-2 fade-in">
+            <div class="flex items-center gap-4 mb-3">
+                <button onclick="backToLogin('view-registration')" class="group flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors -ml-2">
+                    <svg class="w-6 h-6 text-gray-400 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <span class="text-peach text-[15px] font-medium">Email not registered</span>
             </div>
-        </div>
-
-        <div class="relative w-full flex items-center justify-center mb-1">
-            <button onclick="backToLogin('view-registration')" class="absolute left-0 group flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors">
-                <svg class="w-6 h-6 text-gray-400 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-            <h2 class="font-display text-[22px] font-black tracking-tight text-primary leading-none uppercase">HEY, NEWCOMER</h2>
-        </div>
-        
-        <div class="text-center mb-4">
-            <p class="font-sans text-[15px] font-medium text-white">Create an account</p>
+            <h1 class="font-display text-3xl font-bold tracking-tight text-white leading-tight">Create an account</h1>
         </div>
 
         <main class="flex-1 flex flex-col justify-start w-full max-w-sm mx-auto">
@@ -500,18 +506,22 @@ input[type="date"]:invalid::before {
                 </div>
 
                 <div class="col-span-2 relative">
-                    <input class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-2.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-sm" placeholder="Create Password" type="password"/>
-                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors">
+                    <input id="regPassword" class="custom-input w-full bg-surface-input-dark text-gray-100 rounded-xl py-2.5 px-4 placeholder-gray-500 focus:ring-2 focus:ring-primary/50 text-sm" placeholder="Create Password" type="password"/>
+                    <button type="button" onclick="togglePasswordVisibility('regPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     </button>
                 </div>
             </div>
 
             <div class="mt-4 mb-2">
-                <button class="w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+                <button class="w-full bg-primary text-white rounded-xl py-3.5 font-bold text-[16px] hover:bg-opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                     <span>Complete Registration</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                 </button>
+            </div>
+
+            <div class="text-center text-[11px] text-gray-500 mt-2 mb-8">
+                By clicking "Complete Registration", you agree to our <a href="#" class="underline hover:text-gray-300">Terms of Service</a> and <a href="#" class="underline hover:text-gray-300">Privacy Policy</a>.
             </div>
         </main>
     </div>
@@ -561,11 +571,28 @@ function transitionToAuth() {
 function toggleArrow() {
     const emailInput = document.getElementById('emailInput');
     const arrowBtn = document.getElementById('emailArrowBtn');
+    const emailIcon = document.getElementById('emailIconStatic');
     const passwordContainer = document.getElementById('passwordContainer');
+    
+    // Logic: If user types, show arrow, hide static email icon.
+    // If empty, show static email icon, hide arrow.
     if (emailInput.value.length > 0 && passwordContainer.classList.contains('hidden')) {
         arrowBtn.classList.remove('hidden');
+        emailIcon.classList.add('hidden');
     } else {
-        arrowBtn.classList.add('hidden');
+        if (passwordContainer.classList.contains('hidden')) {
+            arrowBtn.classList.add('hidden');
+            emailIcon.classList.remove('hidden');
+        }
+    }
+}
+
+function togglePasswordVisibility(id) {
+    const input = document.getElementById(id);
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
     }
 }
 
@@ -587,7 +614,10 @@ function checkEmailAndProceed() {
     const arrowBtn = document.getElementById('emailArrowBtn');
     const passwordContainer = document.getElementById('passwordContainer');
     const continueBtn = document.getElementById('continueBtn');
+    
+    // Hide arrow button (and keeps email icon hidden from previous step)
     arrowBtn.classList.add('hidden');
+    
     passwordContainer.classList.remove('hidden');
     continueBtn.classList.remove('hidden');
     passwordContainer.querySelector('input').focus();
@@ -631,6 +661,7 @@ function backToLogin(currentViewId) {
     document.getElementById('passwordContainer').classList.add('hidden');
     document.getElementById('continueBtn').classList.add('hidden');
     document.getElementById('emailArrowBtn').classList.add('hidden');
+    document.getElementById('emailIconStatic').classList.remove('hidden');
 }
 </script>
 </body>
