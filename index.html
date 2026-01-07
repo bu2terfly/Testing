@@ -8,24 +8,19 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons" rel="stylesheet"/>
 
     <script>
         tailwind.config = {
-            darkMode: "class", // We keep this but won't activate it
+            darkMode: "class", 
             theme: {
                 extend: {
                     colors: {
                         primary: "#18181b", 
-                        "background-light": "#f4f4f5", 
+                        "background-light": "#f5f3ef", 
                         "card-light": "#ffffff",
                         "text-light": "#18181b",
                         "subtext-light": "#71717a",
-                        // Dark colors kept in config just in case, but won't be used
-                        "background-dark": "#09090b", 
-                        "card-dark": "#18181b",
-                        "text-dark": "#f4f4f5",
-                        "subtext-dark": "#a1a1aa",
                     },
                     fontFamily: {
                         display: ["Inter", "sans-serif"],
@@ -35,6 +30,15 @@
                         'xl': "16px",
                         '2xl': "20px",
                     },
+                    animation: {
+                        'nudge-left': 'nudgeLeft 1.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        nudgeLeft: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '50%': { transform: 'translateX(-3px)' },
+                        }
+                    }
                 },
             },
         };
@@ -43,128 +47,101 @@
     <style>
         body {
             min-height: max(884px, 100dvh);
-            background-color: #f4f4f5; /* Force Light Grey Background */
-            color: #18181b; /* Force Dark Text */
+            background-color: #f5f3ef;
+            color: #18181b;
         }
         
-        /* Pro Card Pattern */
-        .pro-card-bg {
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
         /* Hide Scrollbar utilities */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* View Transition Utility */
-        .view-section {
-            width: 100%;
-            height: 100%;
-            min-height: 100vh;
-        }
+        .view-section { width: 100%; height: 100%; min-height: 100vh; }
     </style>
 </head>
 
 <body class="bg-background-light font-display text-text-light min-h-screen antialiased selection:bg-gray-200">
 
     <section id="view-account-menu" class="view-section pb-10">
-        <div class="max-w-md mx-auto px-4 pt-6">
-            <div class="flex items-center mb-4">
-                <button class="p-2 -ml-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <span class="material-icons-outlined text-2xl">chevron_left</span>
-                </button>
-                <h1 class="text-xl font-semibold ml-1">Account</h1>
-            </div>
+        <div class="max-w-md mx-auto px-4 pt-4 flex flex-col gap-4">
             
-            <div class="relative mb-6">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span class="material-icons-outlined text-gray-400">search</span>
+            <header class="flex justify-end py-1">
+                <a class="flex items-center gap-1.5 font-bold text-base text-black no-underline" href="#">
+                    <svg class="w-[1.1rem] h-[1.1rem] stroke-[3] animate-nudge-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18L12 12L18 6M12 18L6 12L12 6"/>
+                    </svg>
+                    Go to home
+                </a>
+            </header>
+
+            <div class="relative">
+                <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <span class="material-icons text-xl text-gray-800">search</span>
                 </div>
-                <input class="block w-full pl-10 pr-3 py-3 border-none rounded-xl bg-white shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 sm:text-sm transition-shadow" placeholder="Search any roll to view attendance" type="text"/>
+                <input class="block w-full pl-11 pr-4 py-3 rounded-[0.8rem] bg-white text-sm text-gray-900 border-[2px] border-black shadow-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-black transition-shadow" placeholder="Search roll no..." type="text"/>
             </div>
 
-            <div class="bg-primary rounded-2xl p-5 mb-6 shadow-lg relative overflow-hidden text-white pro-card-bg">
-                <div class="relative z-10 flex items-center gap-4">
-                    <div class="relative">
-                        <img alt="Student Avatar" class="w-16 h-16 rounded-full border-2 border-white/20 shadow-md" src="https://lh3.googleusercontent.com/a/default-user=s96-c"/>
-                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-[#18181b] rounded-full"></div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="text-lg font-bold text-white leading-tight truncate">Johnathan Doe</h2>
-                        <p class="text-gray-400 text-xs mb-1.5 truncate">john.doe23@university.edu</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wide bg-white/10 text-gray-200 border border-white/10">
-                                ROLL: 23-CS-045 A
-                            </span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wide bg-blue-500/20 text-blue-200 border border-blue-500/20">
-                                B.Com 1st Sem
-                            </span>
+            <div class="bg-white rounded-[20px] p-4 shadow-sm flex flex-col gap-3">
+                
+                <div class="flex gap-4 items-center">
+                    <img alt="Profile" class="w-[4.5rem] h-[4.5rem] rounded-xl object-cover bg-gray-200 shrink-0 border border-gray-100" src="https://lh3.googleusercontent.com/a/default-user=s96-c"/>
+                    
+                    <div class="flex flex-col justify-between h-[4.5rem] py-0.5 min-w-0">
+                        <h2 class="text-[1.125rem] font-bold text-gray-900 leading-none truncate">Johnathan Doe</h2>
+                        <p class="text-xs font-medium text-gray-500 leading-none truncate">john.doe23@university.edu</p>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide whitespace-nowrap border border-gray-200">Roll - 234</span>
+                            <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide whitespace-nowrap border border-gray-200">B.Com 1st Sem</span>
                         </div>
                     </div>
                 </div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-            </div>
 
-            <div class="bg-card-light rounded-2xl overflow-hidden mb-6 shadow-sm border border-gray-100 p-5">
-                <h3 class="font-semibold text-sm mb-3 text-text-light">Your selected subjects</h3>
-                <div class="relative mb-4 group">
-                    <button class="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm hover:border-gray-300 transition-colors">
-                        <span class="text-gray-600 truncate mr-2">Financial Accounting, Business Law...</span>
-                        <span class="material-icons-outlined text-gray-400">expand_more</span>
+                <div class="text-[13px] font-medium text-gray-500 flex items-center gap-1.5 pl-1">
+                    <span class="material-icons-outlined text-base text-gray-400">school</span>
+                    Dispur College
+                </div>
+
+                <div class="h-px bg-gray-200 w-full"></div>
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center px-1">
+                        <span class="text-sm font-semibold text-gray-900">Your selected subjects</span>
+                        <span class="material-icons text-gray-400 text-xl">keyboard_arrow_down</span>
+                    </div>
+                    <button onclick="navigateTo('view-subject-selection')" class="w-full bg-[#18181b] text-white font-medium py-3 rounded-xl text-[13px] hover:opacity-90 transition-opacity active:scale-[0.98]">
+                        Select / Create Subjects
                     </button>
                 </div>
-                <button onclick="navigateTo('view-subject-selection')" class="w-full bg-primary text-white py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98] transform duration-100">
-                    Select / Create subjects
-                </button>
             </div>
 
-            <div class="bg-card-light rounded-2xl overflow-hidden mb-6 shadow-sm border border-gray-100">
-                <a class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group" href="#">
-                    <div class="flex items-center gap-4">
-                        <span class="material-icons-outlined text-subtext-light">badge</span>
-                        <span class="font-medium text-sm">Important Staff</span>
-                    </div>
-                    <span class="material-icons-outlined text-gray-400 text-xl group-hover:translate-x-1 transition-transform">chevron_right</span>
+            <div class="bg-white rounded-[20px] overflow-hidden shadow-sm">
+                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">badge</span>
+                    <span class="flex-1 text-[13px] font-medium text-gray-700">Important Staff</span>
+                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
                 </a>
-                <a class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group" href="#">
-                    <div class="flex items-center gap-4">
-                        <span class="material-icons-outlined text-subtext-light">person_add</span>
-                        <span class="font-medium text-sm">Refer a Friend</span>
-                    </div>
-                    <span class="material-icons-outlined text-gray-400 text-xl group-hover:translate-x-1 transition-transform">chevron_right</span>
+                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">person_add_alt</span>
+                    <span class="flex-1 text-[13px] font-medium text-gray-700">Refer a Friend</span>
+                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
                 </a>
-                <a class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group" href="#">
-                    <div class="flex items-center gap-4">
-                        <span class="material-icons-outlined text-subtext-light">bug_report</span>
-                        <span class="font-medium text-sm">Report Issue / Feedback</span>
-                    </div>
-                    <span class="material-icons-outlined text-gray-400 text-xl group-hover:translate-x-1 transition-transform">chevron_right</span>
+                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">bug_report</span>
+                    <span class="flex-1 text-[13px] font-medium text-gray-700">Report Issue / Feedback</span>
+                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
                 </a>
-                <a class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group" href="#">
-                    <div class="flex items-center gap-4">
-                        <span class="material-icons-outlined text-subtext-light">privacy_tip</span>
-                        <span class="font-medium text-sm">Terms and Privacy</span>
-                    </div>
-                    <span class="material-icons-outlined text-gray-400 text-xl group-hover:translate-x-1 transition-transform">chevron_right</span>
+                <a href="#" class="flex items-center px-4 py-3.5 hover:bg-gray-50 transition-colors">
+                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">gpp_maybe</span>
+                    <span class="flex-1 text-[13px] font-medium text-gray-700">Terms and Privacy</span>
+                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
                 </a>
             </div>
 
-            <div class="bg-card-light rounded-2xl overflow-hidden mb-6 shadow-sm border border-gray-100">
-                <button class="w-full flex items-center justify-between p-4 hover:bg-red-50 transition-colors text-red-500 group">
-                    <div class="flex items-center gap-4">
-                        <span class="material-icons-outlined">logout</span>
-                        <span class="font-medium text-sm">Log Out</span>
-                    </div>
-                </button>
-            </div>
+            <button class="w-full bg-white rounded-[20px] p-3.5 flex items-center shadow-sm hover:bg-red-50 transition-colors group mb-4">
+                <span class="material-icons-outlined text-red-500 text-[1.125rem] mr-3 rotate-180 group-hover:text-red-600">logout</span>
+                <span class="text-[13px] font-semibold text-red-500 group-hover:text-red-600">Log Out</span>
+            </button>
+
         </div>
     </section>
 
@@ -405,7 +382,6 @@
 
     <script>
         // 1. Force Light Mode
-        // We ensure 'dark' class is removed on load
         document.documentElement.classList.remove('dark');
         localStorage.removeItem('color-theme');
 
