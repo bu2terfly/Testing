@@ -144,7 +144,6 @@
             padding: 2px 0;
             width: 100%;
             overflow: hidden;
-            /* Added relative positioning to anchor the edit icon */
             position: relative; 
         }
 
@@ -155,7 +154,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 20px; /* Prevent text hitting the icon */
+            padding-right: 20px;
         }
 
         .profile-email {
@@ -178,27 +177,23 @@
             letter-spacing: 0.05em;
         }
 
-        
         .pill-purple {
             background: rgba(110, 98, 229, 0.1);
             border: 1px solid rgba(110, 98, 229, 0.1);
             color: var(--brand-purple-text);
         }
         
-        /* NEW: Edit Pencil Icon */
         .edit-icon {
             position: absolute;
-            bottom: 4px; /* Align with the bottom of the pills */
+            bottom: 4px;
             right: 0;
             width: 25px;
             height: 25px;
             cursor: pointer;
-            color: #18181b; /* Gray color default */
+            color: #18181b;
             transition: color 0.2s;
         }
-        .edit-icon:hover {
-            color: var(--brand-purple); /* Purple on hover */
-        }
+        .edit-icon:hover { color: var(--brand-purple); }
 
         /* --- MENU LIST CARD --- */
         .menu-card {
@@ -372,14 +367,13 @@
             </div>
         </div>
 
-        <div class="menu-card">
-            
+        <div class="menu-card" style="margin-bottom: 20px; padding-bottom: 15px;">
             <div class="menu-header">
                 <span class="menu-header-text">Dispur College</span>
                 <span class="material-symbols-rounded" style="color: #d1d5db; font-size: 18px;">school</span>
             </div>
 
-            <a href="#" class="menu-item active">
+            <a href="#" class="menu-item active" style="padding: 14px 16px;">
                 <div class="status-dot"></div>
                 <div class="menu-icon-box purple-bg">
                     <span class="material-symbols-rounded" style="font-size: 18px;">library_add</span>
@@ -390,9 +384,9 @@
                 </div>
                 <span class="material-symbols-rounded chevron-active">chevron_right</span>
             </a>
+        </div>
 
-            <div class="divider"></div>
-
+        <div class="menu-card">
             <a href="#" class="menu-item">
                 <span class="material-symbols-rounded menu-icon-gray">badge</span>
                 <span class="menu-item-text">Important Staff</span>
