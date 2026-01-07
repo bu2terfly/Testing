@@ -29,6 +29,7 @@
             --radius-xl: 16px;
             --radius-lg: 12px;
             --radius-md: 8px;
+            --footer-h: 76px;
         }
 
         /* --- GLOBAL RESET --- */
@@ -57,13 +58,12 @@
         .container-scroll {
             flex: 1;
             overflow-y: auto;
-            padding: 0 20px 8px 20px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            padding: 0 20px calc(var(--footer-h) + 8px) 20px;
         }
         .container-scroll::-webkit-scrollbar { display: none; }
 
         .container-bottom {
+            height: var(--footer-h);
             padding: 12px 20px;
             background-color: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(4px);
