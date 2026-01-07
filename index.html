@@ -3,411 +3,438 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Student Attendance Flow</title>
+    <title>Attenza Simplified Menu</title>
     
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons" rel="stylesheet"/>
-
-    <script>
-        tailwind.config = {
-            darkMode: "class", 
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#18181b", 
-                        "background-light": "#f5f3ef", 
-                        "card-light": "#ffffff",
-                        "text-light": "#18181b",
-                        "subtext-light": "#71717a",
-                    },
-                    fontFamily: {
-                        display: ["Inter", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "12px",
-                        'xl': "16px",
-                        '2xl': "20px",
-                    },
-                    animation: {
-                        'nudge-left': 'nudgeLeft 1.5s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        nudgeLeft: {
-                            '0%, 100%': { transform: 'translateX(0)' },
-                            '50%': { transform: 'translateX(-3px)' },
-                        }
-                    }
-                },
-            },
-        };
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 
     <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg-body: #F9F8F6;
+            --bg-white: #ffffff;
+            --bg-gray-light: #f9fafb;
+            
+            --text-main: #18181b;
+            --text-muted: #71717a;
+            --text-light: #9ca3af;
+            
+            --brand-purple: #6E62E5;
+            --brand-purple-light: rgba(110, 98, 229, 0.05);
+            --brand-purple-text: #6E62E5;
+            
+            --border-color: #f3f4f6;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+        }
+
+        /* --- GLOBAL RESET --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            min-height: max(884px, 100dvh);
-            background-color: #f5f3ef;
-            color: #18181b;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button, input { border: none; outline: none; background: none; }
+
+        /* --- LAYOUT CONTAINERS --- */
+        .container-top { padding: 24px 20px 8px 20px; }
+
+        .container-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 24px 20px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .container-scroll::-webkit-scrollbar { display: none; }
+
+        .container-bottom {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- HEADER & SEARCH --- */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header-title { font-size: 20px; font-weight: 700; }
+
+        .btn-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-close:active { background-color: rgba(0,0,0,0.1); }
+
+        .search-box { position: relative; width: 100%; }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: var(--bg-white);
+            padding: 14px 16px 14px 44px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid black; 
+        }
+        .search-input::placeholder { color: var(--text-light); }
+        .search-input:focus { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); }
+
+        /* --- PROFILE SECTION --- */
+        .profile-card {
+            display: flex;
+            gap: 16px;
+            margin-top: 36px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .profile-img {
+            width: 65px;
+            height: 65px;
+            border-radius: var(--radius-xl);
+            object-fit: cover;
+            border: 1px solid white;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            height: 65px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2px 0;
+            width: 100%;
+            overflow: hidden;
+            /* Added relative positioning to anchor the edit icon */
+            position: relative; 
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 20px; /* Prevent text hitting the icon */
+        }
+
+        .profile-email {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-pills { display: flex; gap: 8px; align-items: center; }
+
+        .pill {
+            padding: 2.5px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        
+        .pill-purple {
+            background: rgba(110, 98, 229, 0.1);
+            border: 1px solid rgba(110, 98, 229, 0.1);
+            color: var(--brand-purple-text);
         }
         
-        /* Hide Scrollbar utilities */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* NEW: Edit Pencil Icon */
+        .edit-icon {
+            position: absolute;
+            bottom: 4px; /* Align with the bottom of the pills */
+            right: 0;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            color: #18181b; /* Gray color default */
+            transition: color 0.2s;
+        }
+        .edit-icon:hover {
+            color: var(--brand-purple); /* Purple on hover */
+        }
 
-        /* View Transition Utility */
-        .view-section { width: 100%; height: 100%; min-height: 100vh; }
+        /* --- MENU LIST CARD --- */
+        .menu-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .menu-header {
+            background-color: #F9FAFB;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-header-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- MENU ITEMS --- */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            transition: background 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .menu-item:hover { background-color: var(--bg-gray-light); }
+        
+        .menu-item.active {
+            background-color: var(--brand-purple-light);
+            border-left: 3px solid var(--brand-purple);
+            padding-left: 13px;
+        }
+        .menu-item.active:hover { background-color: rgba(110, 98, 229, 0.1); }
+
+        .menu-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .menu-icon-box.purple-bg {
+            background-color: var(--brand-purple);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .menu-text { flex: 1; }
+        .menu-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+        .menu-subtitle { font-size: 11px; font-weight: 500; color: var(--brand-purple-text); }
+        .menu-item-text { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-main); }
+        .menu-icon-gray { color: var(--text-light); font-size: 20px; margin-right: 12px; }
+
+        .chevron { color: #d1d5db; font-size: 18px; }
+        .chevron-active { color: var(--brand-purple-text); font-size: 20px; }
+        .divider { height: 1px; background-color: var(--border-color); margin: 0 16px; }
+
+        /* --- PULSING RED DOT ANIMATION --- */
+        .status-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background-color: rgb(255, 0, 0); 
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 4px rgba(255, 0, 0, 0.5); 
+        }
+
+        .status-dot::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 1px;
+            background-color: rgb(255, 0, 0); 
+            border-radius: 50%;
+            animation: pulse-loop 1.5s infinite ease-out;
+        }
+
+        @keyframes pulse-loop {
+            0% { background-color: rgba(255, 0, 0, 1); width: 1px; height: 1px; }
+            100% { background-color: rgba(255, 0, 0, 0); width: 20px; height: 20px; }
+        }
+
+        /* --- FOOTER --- */
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-logout:hover { opacity: 0.75; }
+
+        .version-text { text-align: center; margin-top: 12px; font-size: 10px; color: #d1d5db; }
     </style>
 </head>
 
-<body class="bg-background-light font-display text-text-light min-h-screen antialiased selection:bg-gray-200">
+<body>
 
-    <section id="view-account-menu" class="view-section pb-10">
-        <div class="max-w-md mx-auto px-4 pt-4 flex flex-col gap-4">
-            
-            <header class="flex justify-end py-1">
-                <a class="flex items-center gap-1.5 font-bold text-base text-black no-underline" href="#">
-                    <svg class="w-[1.1rem] h-[1.1rem] stroke-[3] animate-nudge-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18L12 12L18 6M12 18L6 12L12 6"/>
-                    </svg>
-                    Go to home
-                </a>
-            </header>
-
-            <div class="relative">
-                <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <span class="material-icons text-xl text-gray-800">search</span>
-                </div>
-                <input class="block w-full pl-11 pr-4 py-3 rounded-[0.8rem] bg-white text-sm text-gray-900 border-[2px] border-black shadow-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-black transition-shadow" placeholder="Search roll no..." type="text"/>
-            </div>
-
-            <div class="bg-white rounded-[20px] p-4 shadow-sm flex flex-col gap-3">
-                
-                <div class="flex gap-4 items-center">
-                    <img alt="Profile" class="w-[4.5rem] h-[4.5rem] rounded-xl object-cover bg-gray-200 shrink-0 border border-gray-100" src="https://lh3.googleusercontent.com/a/default-user=s96-c"/>
-                    
-                    <div class="flex flex-col justify-between h-[4.5rem] py-0.5 min-w-0">
-                        <h2 class="text-[1.125rem] font-bold text-gray-900 leading-none truncate">Johnathan Doe</h2>
-                        <p class="text-xs font-medium text-gray-500 leading-none truncate">john.doe23@university.edu</p>
-                        <div class="flex items-center gap-2">
-                            <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide whitespace-nowrap border border-gray-200">Roll - 234</span>
-                            <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide whitespace-nowrap border border-gray-200">B.Com 1st Sem</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-[13px] font-medium text-gray-500 flex items-center gap-1.5 pl-1">
-                    <span class="material-icons-outlined text-base text-gray-400">school</span>
-                    Dispur College
-                </div>
-
-                <div class="h-px bg-gray-200 w-full"></div>
-
-                <div class="flex flex-col gap-2">
-                    <div class="flex justify-between items-center px-1">
-                        <span class="text-sm font-semibold text-gray-900">Your selected subjects</span>
-                        <span class="material-icons text-gray-400 text-xl">keyboard_arrow_down</span>
-                    </div>
-                    <button onclick="navigateTo('view-subject-selection')" class="w-full bg-[#18181b] text-white font-medium py-3 rounded-xl text-[13px] hover:opacity-90 transition-opacity active:scale-[0.98]">
-                        Select / Create Subjects
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[20px] overflow-hidden shadow-sm">
-                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">badge</span>
-                    <span class="flex-1 text-[13px] font-medium text-gray-700">Important Staff</span>
-                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">person_add_alt</span>
-                    <span class="flex-1 text-[13px] font-medium text-gray-700">Refer a Friend</span>
-                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">bug_report</span>
-                    <span class="flex-1 text-[13px] font-medium text-gray-700">Report Issue / Feedback</span>
-                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
-                </a>
-                <a href="#" class="flex items-center px-4 py-3.5 hover:bg-gray-50 transition-colors">
-                    <span class="material-icons-outlined text-gray-500 text-[1.125rem] mr-3">gpp_maybe</span>
-                    <span class="flex-1 text-[13px] font-medium text-gray-700">Terms and Privacy</span>
-                    <span class="material-icons text-gray-300 text-base">chevron_right</span>
-                </a>
-            </div>
-
-            <button class="w-full bg-white rounded-[20px] p-3.5 flex items-center shadow-sm hover:bg-red-50 transition-colors group mb-4">
-                <span class="material-icons-outlined text-red-500 text-[1.125rem] mr-3 rotate-180 group-hover:text-red-600">logout</span>
-                <span class="text-[13px] font-semibold text-red-500 group-hover:text-red-600">Log Out</span>
+    <div class="container-top">
+        <div class="header-row">
+            <h1 class="header-title">Menu</h1>
+            <button class="btn-close" onclick="window.history.back()">
+                <span class="material-symbols-rounded">close</span>
             </button>
-
         </div>
-    </section>
 
-    <section id="view-subject-selection" class="view-section hidden flex flex-col">
-        <div class="max-w-md mx-auto w-full px-4 pt-6 flex-1 flex flex-col pb-28 relative">
-            <div class="flex items-center mb-6">
-                <button onclick="navigateTo('view-account-menu')" class="p-2 -ml-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
-                </button>
-                <h1 class="text-xl font-semibold ml-2">Subject Selection</h1>
-            </div>
+        <div class="search-box">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input type="text" placeholder="Search any roll to check attendance" class="search-input">
+        </div>
+    </div>
+
+    <div class="container-scroll">
+
+        <div class="profile-card">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                 class="profile-img" alt="Profile">
             
-            <div class="relative mb-6">
-                <input class="block w-full px-4 py-3.5 border-none rounded-2xl bg-white shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 text-base transition-shadow" placeholder="Type subject name..." type="text"/>
-                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <span class="material-symbols-outlined text-gray-400">search</span>
+            <div class="profile-info">
+                <h2 class="profile-name">Johnathan Doe</h2>
+                <p class="profile-email">john.doe23@university.edu</p>
+                
+                <div class="profile-pills">
+                    <span class="pill pill-purple">Roll - 234</span>
+                    <span class="pill pill-purple">B.Com 1st Sem</span>
                 </div>
-            </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Financial Accounting</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Select</button>
-                </div>
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Business Regulatory Framework</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Select</button>
-                </div>
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Micro Economics</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Select</button>
-                </div>
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Cost Accounting</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Select</button>
-                </div>
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Corporate Finance</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Select</button>
-                </div>
-                <div class="bg-card-light p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between gap-3 h-32">
-                    <span class="font-medium text-sm leading-snug line-clamp-2">Creative Writing 101</span>
-                    <button class="w-full bg-gray-100 text-text-light hover:bg-gray-200 py-2.5 rounded-xl text-sm font-semibold transition-colors">Create</button>
-                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     viewBox="0 0 24 24" 
+                     fill="none" 
+                     stroke="currentColor" 
+                     stroke-width="2" 
+                     stroke-linecap="round" 
+                     stroke-linejoin="round" 
+                     class="edit-icon">  
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>  
+                    <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />  
+                    <path d="M13.5 6.5l4 4" />  
+                    <path d="M16 21l5 -5" />  
+                    <path d="M21 21v.01" />  
+                    <path d="M16 16v.01" />  
+                </svg> 
+
             </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/90 backdrop-blur-md border-t border-gray-200 z-20">
-            <div class="max-w-md mx-auto">
-                <button onclick="navigateTo('view-confirmation')" class="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base shadow-lg hover:opacity-95 transition-opacity active:scale-[0.98] transform duration-100">
-                    Confirm Subjects
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <section id="view-confirmation" class="view-section hidden flex flex-col pb-10">
-        <div class="max-w-md mx-auto w-full px-4 pt-6 flex-1 flex flex-col">
-            <div class="flex items-center mb-4">
-                <button onclick="navigateTo('view-subject-selection')" class="p-2 -ml-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <span class="material-symbols-outlined text-2xl">chevron_left</span>
-                </button>
-                <h1 class="text-xl font-semibold ml-1">Confirmation</h1>
+        <div class="menu-card">
+            
+            <div class="menu-header">
+                <span class="menu-header-text">Dispur College</span>
+                <span class="material-symbols-rounded" style="color: #d1d5db; font-size: 18px;">school</span>
             </div>
 
-            <div class="flex flex-col items-center text-center mb-8 px-2 mt-2">
-                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 ring-1 ring-orange-200">
-                    <span class="material-symbols-outlined text-3xl text-orange-600">lock_clock</span>
+            <a href="#" class="menu-item active">
+                <div class="status-dot"></div>
+                <div class="menu-icon-box purple-bg">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">library_add</span>
                 </div>
-                <h2 class="text-2xl font-bold mb-2">Verify & Lock Profile</h2>
-                <p class="text-subtext-light text-sm leading-relaxed max-w-[90%]">
-                    Please review your details carefully. Once confirmed, your profile and subject selection will be <strong class="text-text-light">permanently locked</strong>.
-                </p>
-            </div>
-
-            <div class="bg-card-light rounded-3xl p-6 shadow-sm border border-gray-100 mb-6">
-                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
-                    <img alt="Student Avatar" class="w-16 h-16 rounded-full border-2 border-gray-100 object-cover shadow-sm" src="https://lh3.googleusercontent.com/a/default-user=s96-c"/>
-                    <div>
-                        <h3 class="text-lg font-bold">Johnathan Doe</h3>
-                        <div class="flex items-center gap-1.5 mt-0.5">
-                            <span class="bg-primary/5 text-primary text-[11px] font-bold px-2 py-0.5 rounded border border-primary/10">23-CS-045 A</span>
-                        </div>
-                    </div>
+                <div class="menu-text">
+                    <p class="menu-title">Select Subjects</p>
+                    <p class="menu-subtitle">Set up subjects to track attendance</p>
                 </div>
+                <span class="material-symbols-rounded chevron-active">chevron_right</span>
+            </a>
 
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center group">
-                        <span class="text-sm text-subtext-light flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px] opacity-50">mail</span>
-                            Email
-                        </span>
-                        <span class="text-sm font-medium text-right max-w-[60%] truncate select-all">john.doe23@university.edu</span>
-                    </div>
-                    <div class="flex justify-between items-center group">
-                        <span class="text-sm text-subtext-light flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px] opacity-50">school</span>
-                            Course
-                        </span>
-                        <span class="text-sm font-medium">B.Com 1st Sem</span>
-                    </div>
-                    <div class="flex justify-between items-center group">
-                        <span class="text-sm text-subtext-light flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px] opacity-50">class</span>
-                            Section
-                        </span>
-                        <span class="text-sm font-medium">Group A</span>
-                    </div>
-                </div>
+            <div class="divider"></div>
 
-                <div class="mt-6 pt-5 border-t border-gray-100">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="material-symbols-outlined text-primary text-lg">library_books</span>
-                        <span class="text-sm font-semibold">Selected Subjects</span>
-                    </div>
-                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                        <p class="text-sm text-gray-700 leading-relaxed font-medium">
-                            Financial Accounting, Business Law, Micro Economics, Business Communication
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <a href="#" class="menu-item">
+                <span class="material-symbols-rounded menu-icon-gray">badge</span>
+                <span class="menu-item-text">Important Staff</span>
+                <span class="material-symbols-rounded chevron">chevron_right</span>
+            </a>
 
-            <div class="flex-1"></div>
+            <div class="divider"></div>
 
-            <div class="space-y-3 pb-4 pt-4 sticky bottom-0 bg-gradient-to-t from-background-light via-background-light to-transparent">
-                <button onclick="navigateTo('view-past-attendance')" class="w-full bg-primary text-white font-semibold py-4 px-6 rounded-2xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-xl">lock</span>
-                    Confirm and Lock Profile
-                </button>
-                <button onclick="navigateTo('view-subject-selection')" class="w-full bg-white text-subtext-light font-medium py-3 px-6 rounded-2xl border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                    Go Back to Edit
-                </button>
-            </div>
-        </div>
-    </section>
+            <a href="#" class="menu-item">
+                <span class="material-symbols-rounded menu-icon-gray">group_add</span>
+                <span class="menu-item-text">Refer a Friend</span>
+                <span class="material-symbols-rounded chevron">chevron_right</span>
+            </a>
 
-    <section id="view-past-attendance" class="view-section hidden flex flex-col">
-        <div class="sticky top-0 z-50 bg-background-light/80 backdrop-blur-md border-b border-gray-200">
-            <div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
-                <button onclick="navigateTo('view-confirmation')" class="p-2 -ml-2 rounded-full hover:bg-gray-200 transition-colors">
-                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
-                </button>
-                <div class="font-semibold text-base">Past Attendance Setup</div>
-                <button onclick="finishSetup()" class="text-sm font-medium text-subtext-light hover:text-primary transition-colors">
-                    Skip
-                </button>
-            </div>
+            <div class="divider"></div>
+
+            <a href="#" class="menu-item">
+                <span class="material-symbols-rounded menu-icon-gray">chat_bubble</span>
+                <span class="menu-item-text">Report Issue</span>
+                <span class="material-symbols-rounded chevron">chevron_right</span>
+            </a>
+
+            <div class="divider"></div>
+
+            <a href="#" class="menu-item">
+                <span class="material-symbols-rounded menu-icon-gray">gpp_maybe</span>
+                <span class="menu-item-text">Terms & Privacy</span>
+                <span class="material-symbols-rounded chevron">chevron_right</span>
+            </a>
         </div>
 
-        <div class="flex-1 max-w-md mx-auto w-full px-4 pt-6 pb-40">
-            <div class="mb-6">
-                <div class="flex items-center gap-2 mb-2">
-                    <h1 class="text-2xl font-bold">Log Past Classes</h1>
-                    <span class="px-2 py-0.5 rounded-full bg-gray-200 text-[10px] font-bold text-gray-600 uppercase tracking-wider">Optional</span>
-                </div>
-                <div class="flex gap-3 items-start p-4 rounded-2xl bg-white shadow-sm border border-gray-100">
-                    <span class="material-symbols-outlined text-xl text-blue-500 mt-0.5">info</span>
-                    <div class="text-sm leading-relaxed text-subtext-light">
-                        If you've already attended classes this semester, enter your current counts below to start with accurate stats. You can skip this and add it later.
-                    </div>
-                </div>
-            </div>
+    </div>
 
-            <div class="space-y-4">
-                <div class="bg-card-light rounded-2xl p-5 shadow-sm border border-gray-100 group focus-within:ring-2 focus-within:ring-primary/5 transition-all">
-                    <div class="flex items-center gap-3 mb-5 border-b border-gray-50 pb-3">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
-                            <span class="font-bold text-xs tracking-wide">FA</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-sm text-text-light">Financial Accounting</h3>
-                            <p class="text-[11px] font-medium text-subtext-light uppercase tracking-wide">Core Subject</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-subtext-light mb-2">Total Classes</label>
-                            <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="0" type="number"/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-subtext-light mb-2">Attended</label>
-                            <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="0" type="number"/>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-subtext-light mb-2 flex justify-between">
-                            Notes
-                            <span class="font-normal text-gray-400">Optional</span>
-                        </label>
-                        <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="e.g. Joined late due to sickness" type="text"/>
-                    </div>
-                </div>
-
-                <div class="bg-card-light rounded-2xl p-5 shadow-sm border border-gray-100 group focus-within:ring-2 focus-within:ring-primary/5 transition-all">
-                    <div class="flex items-center gap-3 mb-5 border-b border-gray-50 pb-3">
-                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shadow-sm">
-                            <span class="font-bold text-xs tracking-wide">BL</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-sm text-text-light">Business Law</h3>
-                            <p class="text-[11px] font-medium text-subtext-light uppercase tracking-wide">Elective</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-subtext-light mb-2">Total Classes</label>
-                            <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="0" type="number"/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-subtext-light mb-2">Attended</label>
-                            <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="0" type="number"/>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-subtext-light mb-2 flex justify-between">
-                            Notes
-                            <span class="font-normal text-gray-400">Optional</span>
-                        </label>
-                        <input class="w-full rounded-xl border-gray-200 bg-gray-50 text-text-light placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm py-2.5 transition-shadow" placeholder="Any remarks..." type="text"/>
-                    </div>
-                </div>
-            </div>
+    <div class="container-bottom">
+        <button class="btn-logout">
+            <span class="material-symbols-rounded">logout</span>
+            Log Out
+        </button>
+        <div class="version-text">
+            Attenza Educational • v1.0.4
         </div>
+    </div>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-200 p-4 pb-8 z-40">
-            <div class="max-w-md mx-auto flex flex-col gap-3">
-                <button onclick="finishSetup()" class="w-full bg-primary text-white py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <span>Complete Setup</span>
-                    <span class="material-symbols-outlined text-lg">check</span>
-                </button>
-                <button onclick="finishSetup()" class="w-full text-subtext-light py-2.5 px-4 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors">
-                    Skip for now
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        // 1. Force Light Mode
-        document.documentElement.classList.remove('dark');
-        localStorage.removeItem('color-theme');
-
-        // 2. Navigation Logic
-        function navigateTo(targetId) {
-            // Hide all views
-            const views = document.querySelectorAll('.view-section');
-            views.forEach(view => {
-                view.classList.add('hidden');
-            });
-
-            // Show target view
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.classList.remove('hidden');
-            }
-
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        // 3. Finish Logic
-        function finishSetup() {
-            alert("Setup Complete! Returning to menu.");
-            navigateTo('view-account-menu');
-        }
-    </script>
 </body>
 </html>
