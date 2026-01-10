@@ -3,69 +3,147 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Attenza - Setup Step 1</title>
+    <title>Attenza App</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 
     <style>
+        /* --- VARIABLES --- */
         :root {
             --bg-body: #F9F8F6;
             --bg-white: #ffffff;
+            --bg-gray-light: #f9fafb;
+            --bg-card: #ffffff;
+            
             --text-main: #18181b;
             --text-muted: #71717a;
             --text-light: #9ca3af;
-            --brand-purple: #6E62E5;
-            --brand-purple-light: rgba(110, 98, 229, 0.08);
+            
+            --brand-purple: #6E62E5; 
+            --brand-purple-light: rgba(110, 98, 229, 0.05);
+            --brand-subtle: #EEF2FF;
+            --brand-purple-text: #6E62E5;
+            
             --border-color: #f3f4f6;
+            --border-light: #E4E4E7;
+            
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            
+            --error-red: #ef4444;
+            --error-bg: #FEF2F2;
+
             --radius-xl: 16px;
             --radius-lg: 12px;
+            --radius-md: 8px;
             --radius-pill: 100px;
+            --radius-card: 14px;
+            --radius-input: 8px;
+            
+            --footer-h: 76px;
         }
 
+        /* --- GLOBAL RESET --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
         button, input { border: none; outline: none; background: none; }
-        
+
+        /* VIEW MANAGEMENT (SPA Logic) */
+        .app-view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: column;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: var(--bg-body);
+        }
+        .app-view.active { display: flex; }
+
+        /* ANIMATIONS */
         .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .scale-pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { 0% { transform: scale(0.95); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* --- LAYOUT CONTAINERS --- */
-        .container-main { 
-            flex: 1; 
-            /* Reduced top padding */
-            padding-top: 20px; 
-            padding-bottom: 120px;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
 
+        /* =========================================
+           1. MENU STYLES
+           ========================================= */
+        .container-top { padding: 24px 20px 8px 20px; }
+        .container-scroll { flex: 1; overflow-y: auto; padding: 0 20px calc(var(--footer-h) + 8px) 20px; }
+        .container-scroll::-webkit-scrollbar { display: none; }
+        .container-bottom { height: var(--footer-h); padding: 12px 20px; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px); border-top: 1px solid var(--border-color); width: 100%; position: fixed; bottom: 0; left: 0; }
+        .menu-footer-spacer { height: var(--footer-h); width: 100%; }
+
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .header-title { font-size: 20px; font-weight: 700; }
+        .btn-close { width: 32px; height: 32px; border-radius: 50%; background-color: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+        .btn-close:active { background-color: rgba(0,0,0,0.1); }
+
+        .search-box { position: relative; width: 100%; }
+        .search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 20px; }
+        .search-box .search-input { width: 100%; background-color: var(--bg-white); padding: 14px 16px 14px 44px; border-radius: var(--radius-lg); font-size: 14px; font-weight: 500; box-shadow: var(--shadow-sm); border: 2px solid black; }
+        .search-box .search-input::placeholder { color: var(--text-light); }
+        .search-box .search-input:focus { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); }
+
+        .menu-profile-card { display: flex; gap: 16px; margin-top: 36px; margin-bottom: 16px; align-items: flex-start; }
+        .menu-profile-img { width: 65px; height: 65px; border-radius: var(--radius-xl); object-fit: cover; border: 1px solid white; box-shadow: var(--shadow-sm); flex-shrink: 0; }
+        .menu-profile-info { height: 65px; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; width: 100%; overflow: hidden; position: relative; }
+        .menu-profile-name { font-size: 18px; font-weight: 700; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
+        .menu-profile-email { font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .menu-card { background: var(--bg-white); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 20px; }
+        .menu-header { background-color: #F9FAFB; padding: 8px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .menu-header-text { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .menu-item { display: flex; align-items: center; padding: 14px 16px; transition: background 0.2s; cursor: pointer; position: relative; }
+        .menu-item:hover { background-color: var(--bg-gray-light); }
+        .menu-item.active { background-color: var(--brand-purple-light); border-left: 3px solid var(--brand-purple); padding-left: 13px; }
+        .menu-item.active:hover { background-color: rgba(110, 98, 229, 0.1); }
+
+        .menu-icon-box { width: 32px; height: 32px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
+        .menu-icon-box.purple-bg { background-color: var(--brand-purple); color: white; box-shadow: var(--shadow-sm); }
+        .menu-text { flex: 1; }
+        .menu-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+        .menu-subtitle { font-size: 11px; font-weight: 500; color: var(--brand-purple-text); }
+        .menu-item-text { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-main); }
+        .menu-icon-gray { color: var(--text-light); font-size: 20px; margin-right: 12px; }
+
+        .chevron { color: #d1d5db; font-size: 18px; }
+        .chevron-active { color: var(--brand-purple-text); font-size: 20px; }
+        .divider { height: 1px; background-color: var(--border-color); margin: 0 16px; }
+
+        .status-dot { position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background-color: rgb(255, 0, 0); border-radius: 50%; z-index: 10; box-shadow: 0 0 4px rgba(255, 0, 0, 0.5); }
+        .status-dot::before { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; background-color: rgb(255, 0, 0); border-radius: 50%; animation: pulse-loop 1.5s infinite ease-out; }
+        @keyframes pulse-loop { 0% { background-color: rgba(255, 0, 0, 1); width: 1px; height: 1px; } 100% { background-color: rgba(255, 0, 0, 0); width: 20px; height: 20px; } }
+
+        .btn-logout { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; color: #ef4444; font-weight: 600; font-size: 14px; cursor: pointer; transition: opacity 0.2s; }
+        .btn-logout:hover { opacity: 0.75; }
+        .version-text { text-align: center; margin-top: 12px; font-size: 10px; color: #d1d5db; }
+
+        /* =========================================
+           2. SETUP STEP 1 STYLES
+           ========================================= */
+        .container-step1 { flex: 1; padding-top: 20px; padding-bottom: 120px; max-width: 600px; margin: 0 auto; width: 100%; overflow-y: auto; }
         .px-default { padding-left: 20px; padding-right: 20px; }
         .px-grid { padding-left: 12px; padding-right: 8px; }
 
-        /* --- HEADER & NAV --- */
-        /* Reduced margin-bottom from 24px to 12px */
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .nav-btn {
-            width: 40px; height: 40px; border-radius: 30%; background: var(--bg-white);
-            border: 1px solid var(--border-color); color: var(--text-main);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: background 0.2s; box-shadow: var(--shadow-sm);
-        }
+        .nav-btn { width: 40px; height: 40px; border-radius: 30%; background: var(--bg-white); border: 1px solid var(--border-color); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; box-shadow: var(--shadow-sm); }
 
-        /* Reduced margin-bottom from 32px to 16px */
         .progress-wrapper { margin-bottom: 26px; }
         .step-text { font-size: 11px; font-weight: 700; color: var(--brand-purple); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
         .progress-track { width: 100%; height: 6px; background: #E4E4E7; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; width: 33%; background: var(--brand-purple); border-radius: 10px; }
+        .progress-fill { height: 100%; background: var(--brand-purple); border-radius: 10px; transition: width 0.3s ease; }
+        .progress-fill.w-33 { width: 33%; }
+        .progress-fill.w-90 { width: 90%; }
 
-        /* --- PROFILE --- */
-        /* Reduced margin-bottom from 32px to 20px */
+        /* Setup Profile reused styles */
         .profile-card { display: flex; gap: 16px; margin-bottom: 26px; align-items: flex-start; }
         .profile-img { width: 60px; height: 60px; border-radius: var(--radius-xl); object-fit: cover; border: 1px solid white; box-shadow: var(--shadow-sm); flex-shrink: 0; }
         .profile-info { height: 60px; display: flex; flex-direction: column; justify-content: space-between; padding: 1px 0; width: 100%; overflow: hidden; position: relative; }
@@ -73,192 +151,329 @@
         .profile-email { font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .profile-pills { display: flex; gap: 8px; align-items: center; }
         .pill { padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .pill-purple { background: rgba(110, 98, 229, 0.1); border: 1px solid rgba(110, 98, 229, 0.1); color: var(--brand-purple); }
-        .edit-icon { position: absolute; bottom: 4px; right: 0; width: 22px; height: 22px; cursor: pointer; color: #18181b; }
+        .pill-purple { background: rgba(110, 98, 229, 0.1); border: 1px solid rgba(110, 98, 229, 0.1); color: var(--brand-purple-text); }
+        .edit-icon { position: absolute; bottom: 4px; right: 0; width: 22px; height: 22px; cursor: pointer; color: #18181b; transition: color 0.2s; }
+        .edit-icon:hover { color: var(--brand-purple); }
 
-        /* Reduced margin-bottom from 20px to 12px */
         .context-header { margin-bottom: 16px; }
         .context-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; color: var(--text-main); }
         .context-sub { font-size: 14px; color: var(--text-muted); line-height: 1.4; }
 
-        /* --- SEARCH (Improved Seamless Logic) --- */
-        /* Reduced margin-bottom from 32px to 16px and removed top padding */
         .search-container { position: relative; width: 100%; margin-bottom: 26px; padding-top: 0px; }
-        
-        .search-icon {
-            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            color: #18181b; font-size: 24px; pointer-events: none; z-index: 5; transition: color 0.3s;
-        }
-
-        /* This layer sits behind the input */
-        .fake-placeholder-layer {
-            position: absolute;
-            left: 56px; /* Matches input padding-left precisely */
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            font-weight: 500;
-            color: #D4D4D8;
-            z-index: 1;
-        }
-
-        .blinking-cursor {
-            color: var(--text-main); /* Theme Black */
-            font-weight: 300;
-            margin-right: -1.5px; /* Forced overlap with the letter T */
-            animation: cursorBlink 1s step-end infinite;
-        }
+        .search-container .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #18181b; font-size: 24px; pointer-events: none; z-index: 5; transition: color 0.3s; }
+        .fake-placeholder-layer { position: absolute; left: 56px; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center; font-size: 16px; font-weight: 500; color: #D4D4D8; z-index: 1; }
+        .blinking-cursor { color: var(--text-main); font-weight: 300; margin-right: -1.5px; animation: cursorBlink 1s step-end infinite; }
         @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .search-container .search-input { position: relative; z-index: 2; width: 100%; background-color: transparent; padding: 10px 12px 10px 38px; font-size: 16px; font-weight: 500; color: var(--text-main); border-bottom: 2px solid #18181b; border-radius: 0; transition: border-color 0.3s ease; }
+        .search-container .search-input:focus { border-bottom-color: var(--brand-purple); }
+        .search-container .search-input:focus ~ .search-icon { color: var(--brand-purple); }
+        .search-container .search-input:focus + .fake-placeholder-layer, .search-container .search-input:not(:placeholder-shown) + .fake-placeholder-layer { opacity: 0; visibility: hidden; }
 
-        .search-input {
-            position: relative;
-            z-index: 2; /* Sits on top of fake placeholder */
-            width: 100%; 
-            background-color: transparent;
-            /* Slightly tighter padding */
-            padding: 10px 12px 10px 38px; 
-            font-size: 16px; font-weight: 500; color: var(--text-main);
-            border-bottom: 2px solid #18181b; border-radius: 0;
-            transition: border-color 0.3s ease;
-        }
-
-        .search-input:focus { border-bottom-color: var(--brand-purple); }
-        .search-input:focus ~ .search-icon { color: var(--brand-purple); }
-
-        /* SEAMLESS HIDE: Hide fake text on focus OR when not empty */
-        .search-input:focus + .fake-placeholder-layer,
-        .search-input:not(:placeholder-shown) + .fake-placeholder-layer {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* --- PILL GRID --- */
         .pill-grid { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; width: 100%; }
-        .subject-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            /* Tighter internal padding */
-            padding: 9px 11px; 
-            background: var(--bg-white); border: 1px solid #e4e4e7;
-            border-radius: var(--radius-pill); cursor: pointer;
-            transition: all 0.2s ease; user-select: none;
-        }
+        .subject-pill { display: inline-flex; align-items: center; gap: 6px; padding: 9px 11px; background: var(--bg-white); border: 1px solid #e4e4e7; border-radius: var(--radius-pill); cursor: pointer; transition: all 0.2s ease; user-select: none; }
         .pill-text { font-size: 13px; font-weight: 600; color: var(--text-main); }
         .pill-icon { font-size: 16px; color: var(--text-light); }
         .subject-pill.active { background: var(--brand-purple-light); border-color: var(--brand-purple); }
         .subject-pill.active .pill-text, .subject-pill.active .pill-icon { color: var(--brand-purple); }
         .subject-pill.create-mode { border: 1px dashed var(--text-muted); background: transparent; }
 
-        /* Missing Subject Footer */
-        .missing-footer {
-            width: 100%; text-align: center; margin-top: 20px;
-            color: var(--text-light); font-size: 13px; font-weight: 500;
+        .missing-footer { width: 100%; text-align: center; margin-top: 20px; color: var(--text-light); font-size: 13px; font-weight: 500; }
+
+        .action-bar-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 100; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; width: auto; }
+        .action-bar-container.visible { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+        .action-bar { background-color: #0F0F11; color: white; padding: 6px 6px 6px 24px; border-radius: 100px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3); min-width: 260px; justify-content: space-between; }
+        .btn-continue-pill { background-color: #ffffff; color: #0F0F11; border: none; padding: 12px 24px; border-radius: 100px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .selection-count { font-size: 16px; }
+
+        /* =========================================
+           3. SETUP STEP 2 STYLES
+           ========================================= */
+        /* EXACT Step 2 Padding Container */
+        .container-step2 { 
+            flex: 1; 
+            padding: 16px 20px 140px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            width: 100%; 
+            overflow-y: auto;
         }
 
-        /* --- ACTION BAR --- */
-        .action-bar-container {
-            position: fixed; bottom: 30px; left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            z-index: 100; opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; width: auto;
-        }
-        .action-bar-container.visible { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-        .action-bar {
-            background-color: #0F0F11; color: white; padding: 6px 6px 6px 24px;
-            border-radius: 100px; display: flex; align-items: center; gap: 20px;
-            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3); min-width: 260px; justify-content: space-between;
-        }
-        .btn-continue-pill {
-            background-color: #ffffff; color: #0F0F11; border: none; padding: 12px 24px;
-            border-radius: 100px; font-size: 16px; font-weight: 600; cursor: pointer;
-        }
-        .selection-count { font-size: 16px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #09090b; margin-bottom: 4px; letter-spacing: -0.02em; }
+        .page-subtitle { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+        .tip-banner { background-color: #F5F3FF; border: 1px dashed #DDD6FE; border-radius: 12px; padding: 8px 12px; display: flex; gap: 12px; align-items: start; margin-bottom: 28px; }
+        .tip-banner .icon { color: #6366F1; font-size: 20px; margin-top: 1px; }
+        .tip-banner p { font-size: 13px; line-height: 1.5; color: #4B5563; }
+        .tip-banner b { color: #4F46E5; font-weight: 600; }
+
+        .card-list { display: flex; flex-direction: column; gap: 10px; }
+        .subject-card { background: var(--bg-card); border: 1.6px solid var(--border-light); border-radius: var(--radius-card); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s ease; }
+        .subject-card:focus-within { border-color: var(--brand-main); box-shadow: 0 4px 12px rgba(110, 98, 229, 0.08); }
+        .card-content { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+        .subject-title { font-size: 14px; font-weight: 600; color: var(--text-main); white-space: normal; line-height: 1.3; }
+        .pct-badge { align-self: flex-start; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: #F3F4F6; color: #9CA3AF; }
+        .pct-badge.active { background: var(--brand-subtle); color: var(--brand-main); }
+        .pct-badge.error { background: var(--error-bg); color: var(--error-red); }
+
+        .input-cluster { display: flex; align-items: flex-start; gap: 8px; flex-shrink: 0; }
+        .input-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .num-input { width: 50px; height: 40px; background: #F9F8F6; border: 1.6px solid #E4E4E7; border-radius: var(--radius-input); text-align: center; font-size: 14px; font-weight: 600; color: #09090b; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .num-input::placeholder { color: #D4D4D8; }
+        .num-input:focus { border-color: var(--brand-main); box-shadow: 0 0 0 3px rgba(110, 98, 229, 0.15); transform: translateY(-1px); }
+        .num-input.error { border-color: var(--error-red); background: var(--error-bg); color: var(--error-red); }
+        .input-label { font-size: 10px; color: var(--text-muted); font-weight: 500; text-transform: none; text-align: center; line-height: 1.2; white-space: nowrap; }
+
+        .fab-container { position: fixed; bottom: 32px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 100; }
+        .fab-content { background-color: #000; padding: 6px 6px 6px 24px; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: space-between; box-shadow: 0 16px 32px -8px rgba(0,0,0,0.3); width: 72%; max-width: 340px; pointer-events: auto; backdrop-filter: blur(10px); }
+        .status-msg { font-size: 13px; font-weight: 500; margin-left: -6px; color: #fff; }
+        .status-msg.active { color: #fff; }
+        .btn-primary { background-color: #fff; color: #000; padding: 14px 20px; border-radius: var(--radius-pill); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; line-height: 1; }
+        .btn-primary.save { background-color: #ffffff; color: #000; }
+
     </style>
 </head>
 
 <body>
 
-    <div class="container-main fade-in">
-        
-        <div class="nav-header px-default">
-            <button class="nav-btn" onclick="window.history.back()">
-                <span class="material-symbols-rounded">arrow_back</span>
-            </button>
-            <button class="nav-btn">
-                <span class="material-symbols-rounded" style="color: var(--brand-purple);">help</span>
-            </button>
+    <div id="view-menu" class="app-view active fade-in">
+        <div class="container-top">
+            <div class="header-row">
+                <h1 class="header-title">Menu</h1>
+                <button class="btn-close" onclick="alert('Close Menu action')">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <span class="material-symbols-rounded search-icon">search</span>
+                <input type="text" placeholder="Search any roll to check attendance" class="search-input">
+            </div>
         </div>
 
-        <div class="progress-wrapper px-default">
-            <div class="step-text">Step 1 of 3</div>
-            <div class="progress-track"><div class="progress-fill"></div></div>
-        </div>
+        <div class="container-scroll">
+            <div class="menu-profile-card">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="menu-profile-img" alt="Profile">
+                <div class="menu-profile-info">
+                    <h2 class="menu-profile-name">Johnathan Doe</h2>
+                    <p class="menu-profile-email">john.doe23@university.edu</p>
+                    
+                    <div class="profile-pills">
+                        <span class="pill pill-purple">Roll - 234</span>
+                        <span class="pill pill-purple">B.Com 1st Sem</span>
+                    </div>
 
-        <div class="profile-card px-default">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="profile-img">
-            <div class="profile-info">
-                <h2 class="profile-name">Johnathan Doe</h2>
-                <p class="profile-email">john.doe23@university.edu</p>
-                <div class="profile-pills">
-                    <span class="pill pill-purple">Roll - 234</span>
-                    <span class="pill pill-purple">B.Com 1st Sem</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edit-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M16 21l5 -5" /><path d="M21 21v.01" /><path d="M16 16v.01" /></svg> 
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edit-icon"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg> 
             </div>
-        </div>
 
-        <div class="context-header px-default">
-            <h1 class="context-title">Choose your subjects</h1>
-            <p class="context-sub">Select or create the subjects for your current class session</p>
-        </div>
+            <div class="menu-card" style="margin-bottom: 20px; padding-bottom: 15px;">
+                <div class="menu-header">
+                    <span class="menu-header-text">Dispur College</span>
+                    <span class="material-symbols-rounded" style="color: #d1d5db; font-size: 18px;">school</span>
+                </div>
 
-        <div class="search-container px-default">
-            <input type="text" id="subjectInput" placeholder=" " class="search-input" oninput="handleSearch()">
-            
-            <div class="fake-placeholder-layer">
-                <span class="blinking-cursor">|</span>Type subject name to create
+                <div class="menu-item active" style="padding: 14px 16px;" onclick="navigateTo('step1')">
+                    <div class="status-dot"></div>
+                    <div class="menu-icon-box purple-bg">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">library_add</span>
+                    </div>
+                    <div class="menu-text">
+                        <p class="menu-title">Select Subjects</p>
+                        <p class="menu-subtitle">Set up subjects to track attendance</p>
+                    </div>
+                    <span class="material-symbols-rounded chevron-active">chevron_right</span>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <a href="#" class="menu-item">
+                    <span class="material-symbols-rounded menu-icon-gray">badge</span>
+                    <span class="menu-item-text">Important Staff</span>
+                    <span class="material-symbols-rounded chevron">chevron_right</span>
+                </a>
+                <div class="divider"></div>
+                <a href="#" class="menu-item">
+                    <span class="material-symbols-rounded menu-icon-gray">group_add</span>
+                    <span class="menu-item-text">Refer a Friend</span>
+                    <span class="material-symbols-rounded chevron">chevron_right</span>
+                </a>
+                <div class="divider"></div>
+                <a href="#" class="menu-item">
+                    <span class="material-symbols-rounded menu-icon-gray">chat_bubble</span>
+                    <span class="menu-item-text">Report Issue</span>
+                    <span class="material-symbols-rounded chevron">chevron_right</span>
+                </a>
+                <div class="divider"></div>
+                <a href="#" class="menu-item">
+                    <span class="material-symbols-rounded menu-icon-gray">gpp_maybe</span>
+                    <span class="menu-item-text">Terms & Privacy</span>
+                    <span class="material-symbols-rounded chevron">chevron_right</span>
+                </a>
             </div>
             
-            <span class="material-symbols-rounded search-icon">search</span>
+            <div class="menu-footer-spacer"></div>
         </div>
 
-        <div id="gridContainer" class="pill-grid px-grid"></div>
-
-        <div class="missing-footer">Missing subject? Create to add</div>
-
+        <div class="container-bottom">
+            <button class="btn-logout">
+                <span class="material-symbols-rounded">logout</span>
+                Log Out
+            </button>
+            <div class="version-text">Attenza Educational • v1.0.4</div>
+        </div>
     </div>
 
-    <div id="actionBar" class="action-bar-container">
-        <div class="action-bar">
-            <span class="selection-count" id="countText">0 selected</span>
-            <button class="btn-continue-pill" onclick="alert('Proceed to Step 2')">Continue</button>
+
+    <div id="view-step1" class="app-view fade-in">
+        <div class="container-step1">
+            
+            <div class="nav-header px-default">
+                <button class="nav-btn" onclick="navigateTo('menu')">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                </button>
+                <button class="nav-btn">
+                    <span class="material-symbols-rounded" style="color: var(--brand-purple);">help</span>
+                </button>
+            </div>
+
+            <div class="progress-wrapper px-default">
+                <div class="step-text">Step 1 of 3</div>
+                <div class="progress-track"><div class="progress-fill w-33"></div></div>
+            </div>
+
+            <div class="profile-card px-default">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="profile-img">
+                <div class="profile-info">
+                    <h2 class="profile-name">Johnathan Doe</h2>
+                    <p class="profile-email">john.doe23@university.edu</p>
+                    <div class="profile-pills">
+                        <span class="pill pill-purple">Roll - 234</span>
+                        <span class="pill pill-purple">B.Com 1st Sem</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edit-icon"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg> 
+                </div>
+            </div>
+
+            <div class="context-header px-default">
+                <h1 class="context-title">Choose your subjects</h1>
+                <p class="context-sub">Select or create the subjects for your current class session</p>
+            </div>
+
+            <div class="search-container px-default">
+                <input type="text" id="subjectInput" placeholder=" " class="search-input" oninput="handleSearch()">
+                
+                <div class="fake-placeholder-layer">
+                    <span class="blinking-cursor">|</span>Type subject name to create
+                </div>
+                
+                <span class="material-symbols-rounded search-icon">search</span>
+            </div>
+
+            <div id="gridContainer" class="pill-grid px-grid"></div>
+
+            <div class="missing-footer">Missing subject? Create to add</div>
+
+        </div>
+
+        <div id="actionBar" class="action-bar-container">
+            <div class="action-bar">
+                <span class="selection-count" id="countText">0 selected</span>
+                <button class="btn-continue-pill" onclick="completeStep1()">Continue</button>
+            </div>
         </div>
     </div>
+
+
+    <div id="view-step2" class="app-view fade-in">
+        <div class="container-step2">
+            
+            <div class="nav-header">
+                <button class="nav-btn" onclick="navigateTo('step1')">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                </button>
+                <button class="nav-btn">
+                    <span class="material-symbols-rounded" style="color: var(--brand-purple);">help</span>
+                </button>
+            </div>
+
+            <div class="progress-wrapper">
+                <div class="step-text">Step 2 of 2</div>
+                <div class="progress-track"><div class="progress-fill w-90"></div></div>
+            </div>
+
+            <h1 class="page-title">Add past attendance</h1>
+            <p class="page-subtitle">If you’ve attended classes already for this session, add those records here</p>
+
+            <div class="tip-banner">
+                <span class="material-symbols-rounded icon">lightbulb</span>
+                <p>You can find past records on your <b>college portal</b>, check with your <b>HOD</b>, or enter a rough estimate.</p>
+            </div>
+
+            <div id="cardsList" class="card-list"></div>
+        </div>
+
+        <div class="fab-container">
+            <div class="fab-content">
+                <span class="status-msg" id="statusText">No past records?</span>
+                <button class="btn-primary" id="actionBtn" onclick="finishSetup()">Skip step</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
-        const fetchedSubjects = [
-            "Financial Accounting", "Business Law", "Micro Economics", 
-            "Communicative English", "Business Stats", "Cost Accounting", 
-            "Marketing Management", "Corporate Law", "Indian Economy", 
-            "IT in Business", "Entrepreneurship", "Auditing"
-        ];
+        /* =========================================
+           GLOBAL STATE
+           ========================================= */
+        let APP_STATE = {
+            fetchedSubjects: [
+                "Financial Accounting", "Business Law", "Micro Economics", 
+                "Communicative English", "Business Stats", "Cost Accounting", 
+                "Marketing Management", "Corporate Law", "Indian Economy", 
+                "IT in Business", "Entrepreneurship", "Auditing"
+            ],
+            selectedSubjects: new Set(),
+            customSubjects: new Set(),
+            step2Data: {}
+        };
 
-        let selectedSubjects = new Set();
-        let customSubjects = new Set();
+        /* =========================================
+           NAVIGATION CONTROLLER
+           ========================================= */
+        function navigateTo(viewId) {
+            // Hide all views
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            
+            // Show target
+            if (viewId === 'menu') document.getElementById('view-menu').classList.add('active');
+            if (viewId === 'step1') {
+                document.getElementById('view-step1').classList.add('active');
+                renderGrid(); // Re-render grid to ensure sizing
+            }
+            if (viewId === 'step2') {
+                document.getElementById('view-step2').classList.add('active');
+                initStep2();
+            }
+        }
+
+        /* =========================================
+           STEP 1 LOGIC
+           ========================================= */
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        ctx.font = "600 13px Inter, sans-serif"; // Updated to match new font size
+        ctx.font = "600 13px Inter, sans-serif";
 
         const grid = document.getElementById('gridContainer');
         const input = document.getElementById('subjectInput');
         const actionBar = document.getElementById('actionBar');
         const countText = document.getElementById('countText');
 
-        setTimeout(() => renderGrid(), 50);
-        new ResizeObserver(() => renderGrid(input.value)).observe(grid);
+        // Observer for grid resizing
+        new ResizeObserver(() => {
+            if(document.getElementById('view-step1').classList.contains('active')) {
+                renderGrid(input.value);
+            }
+        }).observe(grid);
 
         function handleSearch() { renderGrid(input.value); }
 
@@ -268,13 +483,14 @@
 
             grid.innerHTML = "";
             const q = query.toLowerCase().trim();
-            let allSubjects = new Set([...fetchedSubjects, ...customSubjects]);
+            let allSubjects = new Set([...APP_STATE.fetchedSubjects, ...APP_STATE.customSubjects]);
             let filteredList = Array.from(allSubjects).filter(sub => sub.toLowerCase().includes(q));
 
             let allItems = filteredList.map(name => ({
-                name, width: ctx.measureText(name).width + 50, isSelected: selectedSubjects.has(name)
+                name, width: ctx.measureText(name).width + 50, isSelected: APP_STATE.selectedSubjects.has(name)
             }));
 
+            // Simple sort to keep selected items accessible (or randomized as per original code)
             let selectedItems = allItems.filter(item => item.isSelected).sort(() => Math.random() - 0.5);
             let unselectedItems = allItems.filter(item => !item.isSelected).sort(() => Math.random() - 0.5);
             let finalPool = [...selectedItems, ...unselectedItems];
@@ -320,25 +536,148 @@
 
         function createPill(name, isCreationMode) {
             const el = document.createElement('div');
-            el.className = `subject-pill scale-pop ${selectedSubjects.has(name) ? 'active' : ''} ${isCreationMode ? 'create-mode' : ''}`;
+            el.className = `subject-pill scale-pop ${APP_STATE.selectedSubjects.has(name) ? 'active' : ''} ${isCreationMode ? 'create-mode' : ''}`;
             el.innerHTML = `<span class="pill-text">${isCreationMode ? 'Create "'+name+'"' : name}</span>
-                            <span class="material-symbols-rounded pill-icon">${selectedSubjects.has(name) ? 'check' : 'add'}</span>`;
+                            <span class="material-symbols-rounded pill-icon">${APP_STATE.selectedSubjects.has(name) ? 'check' : 'add'}</span>`;
             
             el.onclick = () => {
                 if (isCreationMode) {
-                    customSubjects.add(name); selectedSubjects.add(name); input.value = ""; 
+                    APP_STATE.customSubjects.add(name); 
+                    APP_STATE.selectedSubjects.add(name); 
+                    input.value = ""; 
                 } else {
-                    selectedSubjects.has(name) ? selectedSubjects.delete(name) : selectedSubjects.add(name);
+                    APP_STATE.selectedSubjects.has(name) ? APP_STATE.selectedSubjects.delete(name) : APP_STATE.selectedSubjects.add(name);
                 }
-                handleSearch(); updateActionBar();
+                handleSearch(); 
+                updateStep1Action();
             };
             return el;
         }
 
-        function updateActionBar() {
-            const count = selectedSubjects.size;
+        function updateStep1Action() {
+            const count = APP_STATE.selectedSubjects.size;
             countText.innerText = `${count} selected`;
             actionBar.classList.toggle('visible', count > 0);
+        }
+
+        function completeStep1() {
+            navigateTo('step2');
+        }
+
+
+        /* =========================================
+           STEP 2 LOGIC
+           ========================================= */
+        const listContainer = document.getElementById('cardsList');
+        const actionBtn = document.getElementById('actionBtn');
+        const statusText = document.getElementById('statusText');
+
+        function initStep2() {
+            listContainer.innerHTML = '';
+            APP_STATE.step2Data = {};
+            
+            let subjectsArr = Array.from(APP_STATE.selectedSubjects);
+            if(subjectsArr.length === 0) {
+                // Fallback for direct view access or empty selection
+                listContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding: 20px;">No subjects selected in Step 1</div>';
+                updateStep2Action();
+                return;
+            }
+
+            subjectsArr.forEach((sub, index) => {
+                const id = `sub-${index}`;
+                APP_STATE.step2Data[id] = { total: 0, attended: 0, touched: false };
+
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.innerHTML = `
+                    <div class="card-content">
+                        <span class="subject-title">${sub}</span>
+                        <span class="pct-badge" id="badge-${id}">0%</span>
+                    </div>
+                    
+                    <div class="input-cluster">
+                        <div class="input-wrapper">
+                            <input type="tel" class="num-input" id="total-${id}" placeholder="0" 
+                                oninput="updateCalc('${id}')" onclick="this.select()">
+                            <span class="input-label">Total<br>classes</span>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <input type="tel" class="num-input" id="attended-${id}" placeholder="0" 
+                                oninput="updateCalc('${id}')" onclick="this.select()">
+                            <span class="input-label">Attended<br>classes</span>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+            updateStep2Action();
+        }
+
+        // Expose to window for onclick handlers
+        window.updateCalc = function(id) {
+            const totalEl = document.getElementById(`total-${id}`);
+            const attendedEl = document.getElementById(`attended-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+
+            const total = parseInt(totalEl.value) || 0;
+            const attended = parseInt(attendedEl.value) || 0;
+
+            APP_STATE.step2Data[id].touched = (totalEl.value !== "" || attendedEl.value !== "");
+            APP_STATE.step2Data[id].total = total;
+            APP_STATE.step2Data[id].attended = attended;
+
+            if (attended > total && total > 0) {
+                attendedEl.classList.add('error');
+                badge.className = "pct-badge error";
+                badge.innerText = "Error";
+            } else {
+                attendedEl.classList.remove('error');
+                if (total > 0) {
+                    const pct = Math.round((attended / total) * 100);
+                    badge.className = "pct-badge active";
+                    badge.innerText = `${pct}%`;
+                } else {
+                    badge.className = "pct-badge";
+                    badge.innerText = "0%";
+                }
+            }
+            updateStep2Action();
+        }
+
+        function updateStep2Action() {
+            const validEntries = Object.values(APP_STATE.step2Data).filter(d => d.touched && d.total > 0).length;
+            const anyInput = Object.values(APP_STATE.step2Data).some(d => d.touched);
+
+            if (anyInput) {
+                statusText.innerText = validEntries > 0 
+                    ? `${validEntries} subject${validEntries !== 1 ? 's' : ''} updated` 
+                    : "Entering data...";
+                statusText.classList.add('active');
+                actionBtn.innerText = "Continue";
+                actionBtn.classList.add('save');
+            } else {
+                statusText.innerText = "No past records?";
+                statusText.classList.remove('active');
+                actionBtn.innerText = "Skip step";
+                actionBtn.classList.remove('save');
+            }
+        }
+
+        function finishSetup() {
+            if(actionBtn.classList.contains('save')) {
+                let hasErrors = false;
+                Object.values(APP_STATE.step2Data).forEach(d => { if(d.attended > d.total) hasErrors = true; });
+                
+                if(hasErrors) {
+                    alert("Attended classes cannot be more than Total.");
+                    return;
+                }
+                alert("Setup Complete! Saving data...");
+            }
+            // Return to menu
+            navigateTo('menu');
         }
     </script>
 </body>
