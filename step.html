@@ -66,7 +66,7 @@
             margin-bottom: 24px;
         }
         .tip-banner .icon { color: #6366F1; font-size: 20px; margin-top: 1px; }
-        .tip-banner p { font-size: 12px; line-height: 1.5; color: #4B5563; }
+        .tip-banner p { font-size: 13px; line-height: 1.5; color: #4B5563; }
         .tip-banner b { color: #4F46E5; font-weight: 600; }
 
         /* --- CARD LIST --- */
@@ -299,12 +299,12 @@
                     ? `${validEntries} subject${validEntries !== 1 ? 's' : ''} updated` 
                     : "Entering data...";
                 statusText.classList.add('active');
-                actionBtn.innerText = "Save";
+                actionBtn.innerText = "Continue";
                 actionBtn.classList.add('save');
             } else {
                 statusText.innerText = "No past attendance?";
                 statusText.classList.remove('active');
-                actionBtn.innerText = "Skip";
+                actionBtn.innerText = "Skip step";
                 actionBtn.classList.remove('save');
             }
         }
