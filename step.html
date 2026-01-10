@@ -207,7 +207,7 @@
 
     <div class="fab-container">
         <div class="fab-content">
-            <span class="status-msg" id="statusText">No past attendance?</span>
+            <span class="status-msg" id="statusText">No past records?</span>
             <button class="btn-primary" id="actionBtn" onclick="handleAction()">Skip step</button>
         </div>
     </div>
@@ -302,7 +302,7 @@
                 actionBtn.innerText = "Continue";
                 actionBtn.classList.add('save');
             } else {
-                statusText.innerText = "No past attendance?";
+                statusText.innerText = "No past records?";
                 statusText.classList.remove('active');
                 actionBtn.innerText = "Skip step";
                 actionBtn.classList.remove('save');
