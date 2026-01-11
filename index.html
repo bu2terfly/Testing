@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
     <title>Attenza App</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -41,27 +41,28 @@
             --radius-input: 8px;
             
             --footer-h: 76px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         /* --- GLOBAL RESET --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: var(--bg-body); color: var(--text-main); height: 100vh; width: 100vw; overflow: hidden; position: fixed; }
         a { text-decoration: none; color: inherit; }
         button, input { border: none; outline: none; background: none; }
 
         /* VIEW MANAGEMENT (SPA Logic) */
         .app-view {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            flex-direction: column;
-            overflow-y: auto;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.3s ease;
         }
-        .app-view.active { display: flex; }
+        .app-view.active { opacity: 1; pointer-events: auto; z-index: 10; }
 
         /* ANIMATIONS */
         .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -74,22 +75,38 @@
         /* =========================================
            1. MENU STYLES
            ========================================= */
-        .container-top { padding: 24px 20px 8px 20px; }
-        .container-scroll { flex: 1; overflow-y: auto; padding: 0 20px calc(var(--footer-h) + 8px) 20px; }
+        .container-top { padding: 24px 20px 8px 20px; flex-shrink: 0; }
+        
+        /* Modified for Logout Move: Added bottom padding */
+        .container-scroll { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 0 20px 40px 20px; 
+            overscroll-behavior: contain;
+        }
         .container-scroll::-webkit-scrollbar { display: none; }
-        .container-bottom { height: var(--footer-h); padding: 12px 20px; background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px); border-top: 1px solid var(--border-color); width: 100%; position: fixed; bottom: 0; left: 0; }
-        .menu-footer-spacer { height: var(--footer-h); width: 100%; }
 
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .header-title { font-size: 20px; font-weight: 700; }
-        .btn-close { width: 32px; height: 32px; border-radius: 50%; background-color: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
-        .btn-close:active { background-color: rgba(0,0,0,0.1); }
+        
+        /* Reused nav-btn from Step 1 for consistency */
+        .nav-btn { width: 40px; height: 40px; border-radius: 30%; background: var(--bg-white); border: 1px solid var(--border-color); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; box-shadow: var(--shadow-sm); }
+        .nav-btn:active { background-color: rgba(0,0,0,0.05); transform: scale(0.95); }
 
-        .search-box { position: relative; width: 100%; }
+        .search-box { position: relative; width: 100%; margin-bottom: 0px; }
         .search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 20px; }
-        .search-box .search-input { width: 100%; background-color: var(--bg-white); padding: 14px 16px 14px 44px; border-radius: var(--radius-lg); font-size: 14px; font-weight: 500; box-shadow: var(--shadow-sm); border: 2px solid black; }
+        .search-box .search-input { 
+            width: 100%; 
+            background-color: var(--bg-white); 
+            padding: 14px 16px 14px 44px; /* Original Padding */
+            border-radius: var(--radius-lg); 
+            font-size: 14px; 
+            font-weight: 500; 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border-light); /* Only border color changed */
+        }
         .search-box .search-input::placeholder { color: var(--text-light); }
-        .search-box .search-input:focus { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); }
+        .search-box .search-input:focus { box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); border-color: var(--brand-purple); }
 
         .menu-profile-card { display: flex; gap: 16px; margin-top: 36px; margin-bottom: 16px; align-items: flex-start; }
         .menu-profile-img { width: 65px; height: 65px; border-radius: var(--radius-xl); object-fit: cover; border: 1px solid white; box-shadow: var(--shadow-sm); flex-shrink: 0; }
@@ -122,20 +139,28 @@
         .status-dot::before { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; background-color: rgb(255, 0, 0); border-radius: 50%; animation: pulse-loop 1.5s infinite ease-out; }
         @keyframes pulse-loop { 0% { background-color: rgba(255, 0, 0, 1); width: 1px; height: 1px; } 100% { background-color: rgba(255, 0, 0, 0); width: 20px; height: 20px; } }
 
+        /* Logout Moved out of fixed bottom */
+        .logout-section { margin-top: 36px; text-align: center; padding-bottom: 20px; }
         .btn-logout { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; color: #ef4444; font-weight: 600; font-size: 14px; cursor: pointer; transition: opacity 0.2s; }
         .btn-logout:hover { opacity: 0.75; }
         .version-text { text-align: center; margin-top: 12px; font-size: 10px; color: #d1d5db; }
 
         /* =========================================
-           2. SETUP STEP 1 STYLES
+           2. SETUP SHARED & PERSISTENT LAYOUT
            ========================================= */
-        .container-step1 { flex: 1; padding-top: 20px; padding-bottom: 120px; max-width: 600px; margin: 0 auto; width: 100%; overflow-y: auto; }
-        .px-default { padding-left: 20px; padding-right: 20px; }
-        .px-grid { padding-left: 12px; padding-right: 8px; }
+        /* Wrapper for shared header */
+        .persistent-header {
+            padding: 24px 20px 0 20px;
+            background-color: var(--bg-body);
+            z-index: 20;
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .nav-btn { width: 40px; height: 40px; border-radius: 30%; background: var(--bg-white); border: 1px solid var(--border-color); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; box-shadow: var(--shadow-sm); }
-
+        
         .progress-wrapper { margin-bottom: 26px; }
         .step-text { font-size: 11px; font-weight: 700; color: var(--brand-purple); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
         .progress-track { width: 100%; height: 6px; background: #E4E4E7; border-radius: 10px; overflow: hidden; }
@@ -143,7 +168,39 @@
         .progress-fill.w-33 { width: 33%; }
         .progress-fill.w-90 { width: 90%; }
 
-        /* Setup Profile reused styles */
+        /* Scrollable Area for Steps */
+        .content-stage {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-panel {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            padding-bottom: 140px; /* Space for fixed action bars */
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            overscroll-behavior: contain;
+            width: 100%;
+        }
+        
+        .step-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* --- STEP 1 STYLES --- */
+        .px-default { padding-left: 20px; padding-right: 20px; }
+        .px-grid { padding-left: 12px; padding-right: 8px; }
+
         .profile-card { display: flex; gap: 16px; margin-bottom: 26px; align-items: flex-start; }
         .profile-img { width: 60px; height: 60px; border-radius: var(--radius-xl); object-fit: cover; border: 1px solid white; box-shadow: var(--shadow-sm); flex-shrink: 0; }
         .profile-info { height: 60px; display: flex; flex-direction: column; justify-content: space-between; padding: 1px 0; width: 100%; overflow: hidden; position: relative; }
@@ -179,25 +236,7 @@
 
         .missing-footer { width: 100%; text-align: center; margin-top: 20px; color: var(--text-light); font-size: 13px; font-weight: 500; }
 
-        .action-bar-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 100; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; width: auto; }
-        .action-bar-container.visible { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-        .action-bar { background-color: #0F0F11; color: white; padding: 6px 6px 6px 24px; border-radius: 100px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3); min-width: 260px; justify-content: space-between; }
-        .btn-continue-pill { background-color: #ffffff; color: #0F0F11; border: none; padding: 12px 24px; border-radius: 100px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .selection-count { font-size: 16px; }
-
-        /* =========================================
-           3. SETUP STEP 2 STYLES
-           ========================================= */
-        /* EXACT Step 2 Padding Container */
-        .container-step2 { 
-            flex: 1; 
-            padding: 16px 20px 140px; 
-            max-width: 600px; 
-            margin: 0 auto; 
-            width: 100%; 
-            overflow-y: auto;
-        }
-
+        /* --- STEP 2 STYLES --- */
         .page-title { font-size: 22px; font-weight: 700; color: #09090b; margin-bottom: 4px; letter-spacing: -0.02em; }
         .page-subtitle { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
 
@@ -208,26 +247,54 @@
 
         .card-list { display: flex; flex-direction: column; gap: 10px; }
         .subject-card { background: var(--bg-card); border: 1.6px solid var(--border-light); border-radius: var(--radius-card); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s ease; }
-        .subject-card:focus-within { border-color: var(--brand-main); box-shadow: 0 4px 12px rgba(110, 98, 229, 0.08); }
+        .subject-card:focus-within { border-color: var(--brand-purple); box-shadow: 0 4px 12px rgba(110, 98, 229, 0.08); }
         .card-content { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
         .subject-title { font-size: 14px; font-weight: 600; color: var(--text-main); white-space: normal; line-height: 1.3; }
         .pct-badge { align-self: flex-start; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: #F3F4F6; color: #9CA3AF; }
-        .pct-badge.active { background: var(--brand-subtle); color: var(--brand-main); }
+        .pct-badge.active { background: var(--brand-subtle); color: var(--brand-purple); }
         .pct-badge.error { background: var(--error-bg); color: var(--error-red); }
 
         .input-cluster { display: flex; align-items: flex-start; gap: 8px; flex-shrink: 0; }
         .input-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .num-input { width: 50px; height: 40px; background: #F9F8F6; border: 1.6px solid #E4E4E7; border-radius: var(--radius-input); text-align: center; font-size: 14px; font-weight: 600; color: #09090b; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
         .num-input::placeholder { color: #D4D4D8; }
-        .num-input:focus { border-color: var(--brand-main); box-shadow: 0 0 0 3px rgba(110, 98, 229, 0.15); transform: translateY(-1px); }
+        .num-input:focus { border-color: var(--brand-purple); box-shadow: 0 0 0 3px rgba(110, 98, 229, 0.15); transform: translateY(-1px); }
         .num-input.error { border-color: var(--error-red); background: var(--error-bg); color: var(--error-red); }
         .input-label { font-size: 10px; color: var(--text-muted); font-weight: 500; text-transform: none; text-align: center; line-height: 1.2; white-space: nowrap; }
 
-        .fab-container { position: fixed; bottom: 32px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 100; }
+        /* =========================================
+           3. ACTION BARS (Fixed to Body)
+           ========================================= */
+        /* Wrapper to hold the original content fixed on screen */
+        .fixed-layer {
+            position: fixed;
+            bottom: calc(30px + var(--safe-bottom));
+            left: 0; right: 0;
+            display: flex;
+            justify-content: center;
+            transform: translateY(120px);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        
+        .fixed-layer.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Original Action Bar CSS */
+        .action-bar { background-color: #0F0F11; color: white; padding: 6px 6px 6px 24px; border-radius: 100px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3); min-width: 260px; justify-content: space-between; }
+        .btn-continue-pill { background-color: #ffffff; color: #0F0F11; border: none; padding: 12px 24px; border-radius: 100px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .selection-count { font-size: 16px; }
+
+        /* Original FAB Content CSS (Restored 72% width) */
         .fab-content { background-color: #000; padding: 6px 6px 6px 24px; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: space-between; box-shadow: 0 16px 32px -8px rgba(0,0,0,0.3); width: 72%; max-width: 340px; pointer-events: auto; backdrop-filter: blur(10px); }
         .status-msg { font-size: 13px; font-weight: 500; margin-left: -6px; color: #fff; }
         .status-msg.active { color: #fff; }
-        .btn-primary { background-color: #fff; color: #000; padding: 14px 20px; border-radius: var(--radius-pill); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; line-height: 1; }
+        .btn-primary { background-color: #fff; color: #000; padding: 14px 20px; border-radius: var(--radius-pill); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; line-height: 1; white-space: nowrap; }
         .btn-primary.save { background-color: #ffffff; color: #000; }
 
     </style>
@@ -235,11 +302,11 @@
 
 <body>
 
-    <div id="view-menu" class="app-view active fade-in">
+    <div id="view-menu" class="app-view active">
         <div class="container-top">
             <div class="header-row">
                 <h1 class="header-title">Menu</h1>
-                <button class="btn-close" onclick="alert('Close Menu action')">
+                <button class="nav-btn" onclick="alert('Close Menu action')" aria-label="Close Menu">
                     <span class="material-symbols-rounded">close</span>
                 </button>
             </div>
@@ -310,85 +377,22 @@
                     <span class="material-symbols-rounded chevron">chevron_right</span>
                 </a>
             </div>
-            
-            <div class="menu-footer-spacer"></div>
-        </div>
 
-        <div class="container-bottom">
-            <button class="btn-logout">
-                <span class="material-symbols-rounded">logout</span>
-                Log Out
-            </button>
-            <div class="version-text">Attenza Educational • v1.0.4</div>
-        </div>
-    </div>
-
-
-    <div id="view-step1" class="app-view fade-in">
-        <div class="container-step1">
-            
-            <div class="nav-header px-default">
-                <button class="nav-btn" onclick="navigateTo('menu')">
-                    <span class="material-symbols-rounded">arrow_back</span>
+            <div class="logout-section">
+                <button class="btn-logout">
+                    <span class="material-symbols-rounded">logout</span>
+                    Log Out
                 </button>
-                <button class="nav-btn">
-                    <span class="material-symbols-rounded" style="color: var(--brand-purple);">help</span>
-                </button>
-            </div>
-
-            <div class="progress-wrapper px-default">
-                <div class="step-text">Step 1 of 3</div>
-                <div class="progress-track"><div class="progress-fill w-33"></div></div>
-            </div>
-
-            <div class="profile-card px-default">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="profile-img">
-                <div class="profile-info">
-                    <h2 class="profile-name">Johnathan Doe</h2>
-                    <p class="profile-email">john.doe23@university.edu</p>
-                    <div class="profile-pills">
-                        <span class="pill pill-purple">Roll - 234</span>
-                        <span class="pill pill-purple">B.Com 1st Sem</span>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edit-icon"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg> 
-                </div>
-            </div>
-
-            <div class="context-header px-default">
-                <h1 class="context-title">Choose your subjects</h1>
-                <p class="context-sub">Select or create the subjects for your current class session</p>
-            </div>
-
-            <div class="search-container px-default">
-                <input type="text" id="subjectInput" placeholder=" " class="search-input" oninput="handleSearch()">
-                
-                <div class="fake-placeholder-layer">
-                    <span class="blinking-cursor">|</span>Type subject name to create
-                </div>
-                
-                <span class="material-symbols-rounded search-icon">search</span>
-            </div>
-
-            <div id="gridContainer" class="pill-grid px-grid"></div>
-
-            <div class="missing-footer">Missing subject? Create to add</div>
-
-        </div>
-
-        <div id="actionBar" class="action-bar-container">
-            <div class="action-bar">
-                <span class="selection-count" id="countText">0 selected</span>
-                <button class="btn-continue-pill" onclick="completeStep1()">Continue</button>
+                <div class="version-text">Attenza Educational • v1.0.4</div>
             </div>
         </div>
     </div>
 
 
-    <div id="view-step2" class="app-view fade-in">
-        <div class="container-step2">
-            
+    <div id="view-setup" class="app-view">
+        <div class="persistent-header">
             <div class="nav-header">
-                <button class="nav-btn" onclick="navigateTo('step1')">
+                <button class="nav-btn" onclick="handleBackNavigation()">
                     <span class="material-symbols-rounded">arrow_back</span>
                 </button>
                 <button class="nav-btn">
@@ -397,26 +401,71 @@
             </div>
 
             <div class="progress-wrapper">
-                <div class="step-text">Step 2 of 2</div>
-                <div class="progress-track"><div class="progress-fill w-90"></div></div>
+                <div class="step-text" id="stepText">Step 1 of 3</div>
+                <div class="progress-track"><div id="progressFill" class="progress-fill w-33"></div></div>
             </div>
-
-            <h1 class="page-title">Add past attendance</h1>
-            <p class="page-subtitle">If you’ve attended classes already for this session, add those records here</p>
-
-            <div class="tip-banner">
-                <span class="material-symbols-rounded icon">lightbulb</span>
-                <p>You can find past records on your <b>college portal</b>, check with your <b>HOD</b>, or enter a rough estimate.</p>
-            </div>
-
-            <div id="cardsList" class="card-list"></div>
         </div>
 
-        <div class="fab-container">
-            <div class="fab-content">
-                <span class="status-msg" id="statusText">No past records?</span>
-                <button class="btn-primary" id="actionBtn" onclick="finishSetup()">Skip step</button>
+        <div class="content-stage">
+            <div id="step1-panel" class="step-panel">
+                <div class="profile-card px-default">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="profile-img">
+                    <div class="profile-info">
+                        <h2 class="profile-name">Johnathan Doe</h2>
+                        <p class="profile-email">john.doe23@university.edu</p>
+                        <div class="profile-pills">
+                            <span class="pill pill-purple">Roll - 234</span>
+                            <span class="pill pill-purple">B.Com 1st Sem</span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="edit-icon"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg> 
+                    </div>
+                </div>
+
+                <div class="context-header px-default">
+                    <h1 class="context-title">Choose your subjects</h1>
+                    <p class="context-sub">Select or create the subjects for your current class session</p>
+                </div>
+
+                <div class="search-container px-default">
+                    <input type="text" id="subjectInput" placeholder=" " class="search-input" oninput="handleSearch()">
+                    <div class="fake-placeholder-layer">
+                        <span class="blinking-cursor">|</span>Type subject name to create
+                    </div>
+                    <span class="material-symbols-rounded search-icon">search</span>
+                </div>
+
+                <div id="gridContainer" class="pill-grid px-grid"></div>
+                <div class="missing-footer">Missing subject? Create to add</div>
             </div>
+
+            <div id="step2-panel" class="step-panel">
+                <div style="padding: 16px 20px 0;">
+                    <h1 class="page-title">Add past attendance</h1>
+                    <p class="page-subtitle">If you’ve attended classes already for this session, add those records here</p>
+
+                    <div class="tip-banner">
+                        <span class="material-symbols-rounded icon">lightbulb</span>
+                        <p>You can find past records on your <b>college portal</b>, check with your <b>HOD</b>, or enter a rough estimate.</p>
+                    </div>
+
+                    <div id="cardsList" class="card-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="actionBar" class="fixed-layer">
+        <div class="action-bar">
+            <span class="selection-count" id="countText">0 selected</span>
+            <button class="btn-continue-pill" onclick="completeStep1()">Continue</button>
+        </div>
+    </div>
+
+    <div id="fabContainer" class="fixed-layer">
+        <div class="fab-content">
+            <span class="status-msg" id="statusText">No past records?</span>
+            <button class="btn-primary" id="actionBtn" onclick="finishSetup()">Skip step</button>
         </div>
     </div>
 
@@ -426,6 +475,7 @@
            GLOBAL STATE
            ========================================= */
         let APP_STATE = {
+            currentView: 'menu',
             fetchedSubjects: [
                 "Financial Accounting", "Business Law", "Micro Economics", 
                 "Communicative English", "Business Stats", "Cost Accounting", 
@@ -441,23 +491,80 @@
            NAVIGATION CONTROLLER
            ========================================= */
         function navigateTo(viewId) {
-            // Hide all views
-            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            APP_STATE.currentView = viewId;
             
-            // Show target
-            if (viewId === 'menu') document.getElementById('view-menu').classList.add('active');
-            if (viewId === 'step1') {
-                document.getElementById('view-step1').classList.add('active');
-                renderGrid(); // Re-render grid to ensure sizing
+            // Hide Menu
+            const menuView = document.getElementById('view-menu');
+            const setupView = document.getElementById('view-setup');
+            
+            if (viewId === 'menu') {
+                menuView.classList.add('active');
+                setupView.classList.remove('active');
+                
+                // Hide floating elements
+                document.getElementById('actionBar').classList.remove('visible');
+                document.getElementById('fabContainer').classList.remove('visible');
+            } 
+            else {
+                // Entering Setup Flow
+                menuView.classList.remove('active');
+                setupView.classList.add('active');
+                
+                // Sub-navigation within Setup
+                if (viewId === 'step1') {
+                    showStep(1);
+                    // Slight delay to allow layout to settle before calculating grid
+                    setTimeout(() => renderGrid(document.getElementById('subjectInput').value), 50);
+                } else if (viewId === 'step2') {
+                    showStep(2);
+                    initStep2();
+                }
             }
-            if (viewId === 'step2') {
-                document.getElementById('view-step2').classList.add('active');
-                initStep2();
+        }
+
+        function showStep(stepNum) {
+            const panel1 = document.getElementById('step1-panel');
+            const panel2 = document.getElementById('step2-panel');
+            const label = document.getElementById('stepText');
+            const progress = document.getElementById('progressFill');
+            const actionBar = document.getElementById('actionBar');
+            const fabContainer = document.getElementById('fabContainer');
+
+            // Reset scroll positions
+            if(stepNum === 1) panel1.scrollTop = 0;
+            if(stepNum === 2) panel2.scrollTop = 0;
+
+            if (stepNum === 1) {
+                panel1.classList.add('active');
+                panel2.classList.remove('active');
+                label.innerText = "Step 1 of 3";
+                progress.style.width = "33%";
+                
+                // Action Bars
+                fabContainer.classList.remove('visible');
+                updateStep1Action(); 
+            } else {
+                panel1.classList.remove('active');
+                panel2.classList.add('active');
+                label.innerText = "Step 2 of 2";
+                progress.style.width = "90%";
+                
+                // Action Bars
+                actionBar.classList.remove('visible');
+                updateStep2Action(); 
+            }
+        }
+
+        function handleBackNavigation() {
+            if (APP_STATE.currentView === 'step2') {
+                navigateTo('step1');
+            } else {
+                navigateTo('menu');
             }
         }
 
         /* =========================================
-           STEP 1 LOGIC
+           STEP 1 LOGIC (Restored Exact Copy)
            ========================================= */
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -470,7 +577,7 @@
 
         // Observer for grid resizing
         new ResizeObserver(() => {
-            if(document.getElementById('view-step1').classList.contains('active')) {
+            if(document.getElementById('step1-panel').classList.contains('active')) {
                 renderGrid(input.value);
             }
         }).observe(grid);
@@ -557,7 +664,12 @@
         function updateStep1Action() {
             const count = APP_STATE.selectedSubjects.size;
             countText.innerText = `${count} selected`;
-            actionBar.classList.toggle('visible', count > 0);
+            
+            if(count > 0 && APP_STATE.currentView === 'step1') {
+                actionBar.classList.add('visible');
+            } else {
+                actionBar.classList.remove('visible');
+            }
         }
 
         function completeStep1() {
@@ -571,6 +683,7 @@
         const listContainer = document.getElementById('cardsList');
         const actionBtn = document.getElementById('actionBtn');
         const statusText = document.getElementById('statusText');
+        const fabContainer = document.getElementById('fabContainer');
 
         function initStep2() {
             listContainer.innerHTML = '';
@@ -578,7 +691,6 @@
             
             let subjectsArr = Array.from(APP_STATE.selectedSubjects);
             if(subjectsArr.length === 0) {
-                // Fallback for direct view access or empty selection
                 listContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding: 20px;">No subjects selected in Step 1</div>';
                 updateStep2Action();
                 return;
@@ -615,7 +727,6 @@
             updateStep2Action();
         }
 
-        // Expose to window for onclick handlers
         window.updateCalc = function(id) {
             const totalEl = document.getElementById(`total-${id}`);
             const attendedEl = document.getElementById(`attended-${id}`);
@@ -647,8 +758,12 @@
         }
 
         function updateStep2Action() {
+            if(APP_STATE.currentView !== 'step2') return;
+
             const validEntries = Object.values(APP_STATE.step2Data).filter(d => d.touched && d.total > 0).length;
             const anyInput = Object.values(APP_STATE.step2Data).some(d => d.touched);
+
+            fabContainer.classList.add('visible'); // Always visible in step 2
 
             if (anyInput) {
                 statusText.innerText = validEntries > 0 
